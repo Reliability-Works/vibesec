@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+
+# build
+/dist/
+**/dist/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# coverage
+coverage/
+
+# env
+.env
+.env.*
+
+# allow test fixtures
+!packages/core/test/fixtures/**/.env
+!packages/core/test/fixtures/**/.env.*
+
+# misc
+.tmp/

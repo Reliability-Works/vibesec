@@ -1,0 +1,16 @@
+{
+  "name": "@vibesec/analyzer-javascript",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "pnpm build && node --test test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@vibesec/core": "workspace:*"
+  }
+}

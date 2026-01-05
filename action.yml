@@ -1,0 +1,56 @@
+name: VibeSec
+description: Run VibeSec security scan
+
+inputs:
+  path:
+    description: Path to scan
+    required: false
+    default: .
+  framework:
+    description: Framework selection (auto or comma-separated list)
+    required: false
+    default: auto
+  output:
+    description: Output format (cli|json|sarif|html)
+    required: false
+    default: sarif
+  out-file:
+    description: Output file path (used for json|sarif|html)
+    required: false
+    default: vibesec.sarif
+  fail-on:
+    description: Exit non-zero if findings at/above this severity
+    required: false
+    default: high
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10.27.0
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: pnpm
+        cache-dependency-path: ${{ github.action_path }}/pnpm-lock.yaml
+
+    - name: Install
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: pnpm install --frozen-lockfile
+
+    - name: Build
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: pnpm build
+
+    - name: Scan
+      shell: bash
+      run: |
+        node "${{ github.action_path }}/packages/cli/dist/cli.js" scan "${{ inputs.path }}" \
+          --framework "${{ inputs.framework }}" \
+          --output "${{ inputs.output }}" \
+          --out-file "${{ inputs.out-file }}" \
+          --fail-on "${{ inputs.fail-on }}"

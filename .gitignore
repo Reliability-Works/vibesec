@@ -31,3 +31,7 @@ coverage/
 
 # misc
 .tmp/
+
+# accidental husky install targets
+/-h/
+/--help/

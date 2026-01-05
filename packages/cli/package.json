@@ -1,7 +1,6 @@
 {
-  "name": "vibesec",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@reliability-works/vibesec",
+  "version": "0.1.0",
   "bin": {
     "vibesec": "dist/cli.js"
   },
@@ -12,11 +11,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@vibesec/core": "workspace:*",
-    "@vibesec/ruleset-nextjs": "workspace:*",
-    "@vibesec/ruleset-react-native": "workspace:*",
-    "@vibesec/ruleset-express": "workspace:*",
-    "@vibesec/ruleset-sveltekit": "workspace:*",
+    "@reliability-works/core": "workspace:*",
+    "@reliability-works/ruleset-nextjs": "workspace:*",
+    "@reliability-works/ruleset-react-native": "workspace:*",
+    "@reliability-works/ruleset-express": "workspace:*",
+    "@reliability-works/ruleset-sveltekit": "workspace:*",
     "commander": "^12.0.0"
   }
 }

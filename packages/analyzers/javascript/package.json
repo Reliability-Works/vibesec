@@ -1,7 +1,6 @@
 {
-  "name": "@vibesec/analyzer-javascript",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@reliability-works/analyzer-javascript",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,6 +10,6 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@vibesec/core": "workspace:*"
+    "@reliability-works/core": "workspace:*"
   }
 }

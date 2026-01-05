@@ -1,5 +1,4 @@
 {
-  "name": "@vibesec/ruleset-react-native",
-  "version": "0.0.0",
-  "private": true
+  "name": "@reliability-works/ruleset-react-native",
+  "version": "0.1.0"
 }

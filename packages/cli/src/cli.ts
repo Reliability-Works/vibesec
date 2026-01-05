@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
@@ -17,7 +18,7 @@ import {
   type Rule,
   type SeverityName,
   type ScanResult,
-} from '@vibesec/core'
+} from '@reliability-works/core'
 
 type ScanCommandOptions = {
   output: string
@@ -150,22 +151,42 @@ async function loadRulesForFrameworks(frameworks: FrameworkDetection[]): Promise
   const rules: Rule[] = []
 
   if (ids.has('nextjs')) {
-    rules.push(...(await loadRulesetRules('@vibesec/ruleset-nextjs')))
+    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-nextjs')))
   }
 
   if (ids.has('react-native') || ids.has('expo')) {
-    rules.push(...(await loadRulesetRules('@vibesec/ruleset-react-native')))
+    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-react-native')))
   }
 
   if (ids.has('express')) {
-    rules.push(...(await loadRulesetRules('@vibesec/ruleset-express')))
+    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-express')))
   }
 
   if (ids.has('sveltekit')) {
-    rules.push(...(await loadRulesetRules('@vibesec/ruleset-sveltekit')))
+    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-sveltekit')))
   }
 
   return rules
+}
+
+function readCliVersion(): string {
+  const packageJsonPath = path.join(__dirname, '..', 'package.json')
+
+  let raw: string
+  try {
+    raw = readFileSync(packageJsonPath, 'utf8')
+  } catch {
+    return '0.0.0'
+  }
+
+  const parsed = JSON.parse(raw) as unknown
+
+  if (parsed && typeof parsed === 'object' && 'version' in parsed) {
+    const version = (parsed as { version?: unknown }).version
+    if (typeof version === 'string' && version.length > 0) return version
+  }
+
+  return '0.0.0'
 }
 
 export async function runCli(argv: string[]): Promise<void> {
@@ -174,7 +195,7 @@ export async function runCli(argv: string[]): Promise<void> {
   program
     .name('vibesec')
     .description('Local security scanner for modern frameworks')
-    .version('0.0.0')
+    .version(readCliVersion())
 
   program
     .command('scan')

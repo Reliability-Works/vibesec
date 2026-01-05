@@ -31,25 +31,25 @@ importers:
 
   packages/analyzers/javascript:
     dependencies:
-      '@vibesec/core':
+      '@reliability-works/core':
         specifier: workspace:*
         version: link:../../core
 
   packages/cli:
     dependencies:
-      '@vibesec/core':
+      '@reliability-works/core':
         specifier: workspace:*
         version: link:../core
-      '@vibesec/ruleset-express':
+      '@reliability-works/ruleset-express':
         specifier: workspace:*
         version: link:../rulesets/express
-      '@vibesec/ruleset-nextjs':
+      '@reliability-works/ruleset-nextjs':
         specifier: workspace:*
         version: link:../rulesets/nextjs
-      '@vibesec/ruleset-react-native':
+      '@reliability-works/ruleset-react-native':
         specifier: workspace:*
         version: link:../rulesets/react-native
-      '@vibesec/ruleset-sveltekit':
+      '@reliability-works/ruleset-sveltekit':
         specifier: workspace:*
         version: link:../rulesets/sveltekit
       commander:

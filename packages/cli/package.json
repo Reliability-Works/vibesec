@@ -1,5 +1,5 @@
 {
-  "name": "@reliability-works/vibesec",
+  "name": "@reliabilityworks/vibesec",
   "version": "0.1.0",
   "bin": {
     "vibesec": "dist/cli.js"
@@ -11,12 +11,12 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@reliability-works/core": "workspace:*",
-    "@reliability-works/analyzer-javascript": "workspace:*",
-    "@reliability-works/ruleset-nextjs": "workspace:*",
-    "@reliability-works/ruleset-react-native": "workspace:*",
-    "@reliability-works/ruleset-express": "workspace:*",
-    "@reliability-works/ruleset-sveltekit": "workspace:*",
+    "@reliabilityworks/core": "workspace:*",
+    "@reliabilityworks/analyzer-javascript": "workspace:*",
+    "@reliabilityworks/ruleset-nextjs": "workspace:*",
+    "@reliabilityworks/ruleset-react-native": "workspace:*",
+    "@reliabilityworks/ruleset-express": "workspace:*",
+    "@reliabilityworks/ruleset-sveltekit": "workspace:*",
     "commander": "^12.0.0"
   }
 }

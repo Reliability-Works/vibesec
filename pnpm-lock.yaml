@@ -31,28 +31,28 @@ importers:
 
   packages/analyzers/javascript:
     dependencies:
-      '@reliability-works/core':
+      '@reliabilityworks/core':
         specifier: workspace:*
         version: link:../../core
 
   packages/cli:
     dependencies:
-      '@reliability-works/analyzer-javascript':
+      '@reliabilityworks/analyzer-javascript':
         specifier: workspace:*
         version: link:../analyzers/javascript
-      '@reliability-works/core':
+      '@reliabilityworks/core':
         specifier: workspace:*
         version: link:../core
-      '@reliability-works/ruleset-express':
+      '@reliabilityworks/ruleset-express':
         specifier: workspace:*
         version: link:../rulesets/express
-      '@reliability-works/ruleset-nextjs':
+      '@reliabilityworks/ruleset-nextjs':
         specifier: workspace:*
         version: link:../rulesets/nextjs
-      '@reliability-works/ruleset-react-native':
+      '@reliabilityworks/ruleset-react-native':
         specifier: workspace:*
         version: link:../rulesets/react-native
-      '@reliability-works/ruleset-sveltekit':
+      '@reliabilityworks/ruleset-sveltekit':
         specifier: workspace:*
         version: link:../rulesets/sveltekit
       commander:

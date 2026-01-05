@@ -6,7 +6,7 @@ import path from 'node:path'
 
 import { Command } from 'commander'
 
-import { getJavaScriptRules } from '@reliability-works/analyzer-javascript'
+import { getJavaScriptRules } from '@reliabilityworks/analyzer-javascript'
 import {
   detectFrameworks,
   detectFrameworksInWorkspace,
@@ -20,7 +20,7 @@ import {
   type Rule,
   type SeverityName,
   type ScanResult,
-} from '@reliability-works/core'
+} from '@reliabilityworks/core'
 
 type ScanCommandOptions = {
   output: string
@@ -153,19 +153,19 @@ async function loadRulesForFrameworks(frameworks: FrameworkDetection[]): Promise
   const rules: Rule[] = []
 
   if (ids.has('nextjs')) {
-    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-nextjs')))
+    rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-nextjs')))
   }
 
   if (ids.has('react-native') || ids.has('expo')) {
-    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-react-native')))
+    rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-react-native')))
   }
 
   if (ids.has('express')) {
-    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-express')))
+    rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-express')))
   }
 
   if (ids.has('sveltekit')) {
-    rules.push(...(await loadRulesetRules('@reliability-works/ruleset-sveltekit')))
+    rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-sveltekit')))
   }
 
   return rules

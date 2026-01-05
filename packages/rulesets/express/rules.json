@@ -35,5 +35,714 @@
       "flags": "s",
       "message": "Session cookie appears to set secure: false."
     }
+  },
+  {
+    "id": "express/session-cookie-httponly-false",
+    "severity": "high",
+    "title": "Session cookie configured with httpOnly: false",
+    "description": "Cookies without httpOnly can be accessed by JavaScript and stolen via XSS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "cookie\\s*:\\s*\\{[^}]*\\bhttpOnly\\s*:\\s*false",
+      "flags": "s",
+      "message": "Session cookie appears to set httpOnly: false."
+    }
+  },
+  {
+    "id": "express/session-cookie-samesite-none",
+    "severity": "medium",
+    "title": "Session cookie SameSite set to none",
+    "description": "SameSite=none can enable cross-site cookie sending; ensure CSRF protections and secure cookies.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "sameSite\\s*:\\s*['\"]none['\"]",
+      "message": "sameSite appears to be set to 'none'."
+    }
+  },
+  {
+    "id": "express/session-cookie-domain-dot",
+    "severity": "medium",
+    "title": "Session cookie domain set to a dot-prefixed domain",
+    "description": "Setting cookie domain broadly can increase exposure across subdomains.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "domain\\s*:\\s*['\"]\\.[^'\"]+['\"]",
+      "message": "Cookie domain appears to be set for all subdomains."
+    }
+  },
+  {
+    "id": "express/session-cookie-path-root",
+    "severity": "low",
+    "title": "Session cookie path set to '/'",
+    "description": "Cookies scoped to '/' are sent to all paths; consider narrowing scope when possible.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bpath\\s*:\\s*['\"]/['\"]",
+      "message": "Cookie path appears to be set to '/'."
+    }
+  },
+  {
+    "id": "express/trust-proxy-enabled",
+    "severity": "medium",
+    "title": "trust proxy enabled",
+    "description": "Enabling trust proxy without carefully controlling upstream proxies can enable spoofing of client IP and protocol.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\btrust\\s+proxy\\b|\\bapp\\.set\\(\\s*['\"]trust proxy['\"]",
+      "message": "trust proxy appears to be enabled"
+    }
+  },
+  {
+    "id": "express/helmet-disabled",
+    "severity": "medium",
+    "title": "helmet() not used",
+    "description": "Without security headers middleware, default browser protections may be weaker.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bhelmet\\s*\\(",
+      "message": "helmet() usage detected; ensure it is configured appropriately"
+    }
+  },
+  {
+    "id": "express/cors-credentials-true",
+    "severity": "high",
+    "title": "CORS credentials enabled",
+    "description": "credentials: true can be risky when combined with permissive origins.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bcredentials\\s*:\\s*true",
+      "message": "CORS credentials appears enabled"
+    }
+  },
+  {
+    "id": "express/cors-allowed-headers-star",
+    "severity": "medium",
+    "title": "CORS allows any request headers",
+    "description": "Allowing any headers in CORS responses can broaden attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Access-Control-Allow-Headers\\s*['\"]?\\s*,\\s*['\"]\\*['\"]",
+      "message": "Access-Control-Allow-Headers appears to be '*'"
+    }
+  },
+  {
+    "id": "express/cors-allowed-methods-star",
+    "severity": "medium",
+    "title": "CORS allows any methods",
+    "description": "Allowing any methods in CORS responses can broaden attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Access-Control-Allow-Methods\\s*['\"]?\\s*,\\s*['\"]\\*['\"]",
+      "message": "Access-Control-Allow-Methods appears to be '*'"
+    }
+  },
+  {
+    "id": "express/header-x-powered-by",
+    "severity": "low",
+    "title": "X-Powered-By header enabled",
+    "description": "X-Powered-By can reveal implementation details.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "X-Powered-By",
+      "message": "X-Powered-By header referenced"
+    }
+  },
+  {
+    "id": "express/csp-unsafe-inline",
+    "severity": "high",
+    "title": "CSP allows unsafe-inline",
+    "description": "CSP with unsafe-inline weakens script protections and increases XSS risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Content-Security-Policy[^\\n\\r]*unsafe-inline",
+      "message": "Content-Security-Policy includes unsafe-inline"
+    }
+  },
+  {
+    "id": "express/csp-unsafe-eval",
+    "severity": "high",
+    "title": "CSP allows unsafe-eval",
+    "description": "CSP with unsafe-eval weakens script protections and increases XSS risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Content-Security-Policy[^\\n\\r]*unsafe-eval",
+      "message": "Content-Security-Policy includes unsafe-eval"
+    }
+  },
+  {
+    "id": "express/cookie-parser-secret-hardcoded",
+    "severity": "high",
+    "title": "Hardcoded cookie-parser secret",
+    "description": "Hardcoding secrets in source code increases risk of compromise.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "cookieParser\\s*\\(\\s*['\"][^'\"]{8,}['\"]",
+      "message": "cookieParser appears to use a hardcoded secret"
+    }
+  },
+  {
+    "id": "express/jwt-secret-hardcoded",
+    "severity": "high",
+    "title": "Hardcoded JWT secret",
+    "description": "Hardcoding JWT secrets increases risk of token forgery.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "jwt\\.(sign|verify)\\s*\\([^\\)]*,\\s*['\"][^'\"]{8,}['\"]",
+      "message": "JWT signing/verifying appears to use a hardcoded secret"
+    }
+  },
+  {
+    "id": "express/jwt-alg-none",
+    "severity": "high",
+    "title": "JWT algorithm set to none",
+    "description": "alg=none disables signature verification.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\balgorithms?\\s*:\\s*\\[[^\\]]*['\"]none['\"]",
+      "message": "JWT algorithms appears to include 'none'"
+    }
+  },
+  {
+    "id": "express/bcrypt-low-rounds",
+    "severity": "medium",
+    "title": "bcrypt salt rounds too low",
+    "description": "Low bcrypt rounds reduce password hashing strength.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "bcrypt\\.(hash|hashSync)\\s*\\([^\\)]*,\\s*([0-9]|1[0-1])\\b",
+      "message": "bcrypt rounds appear low"
+    }
+  },
+  {
+    "id": "express/password-compare-timing",
+    "severity": "medium",
+    "title": "Insecure string comparison for secrets",
+    "description": "Using === to compare secrets can introduce timing attacks in some contexts.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\b(password|secret|token)\\b[^\\n\\r]{0,40}===",
+      "message": "Potential secret comparison using ==="
+    }
+  },
+  {
+    "id": "express/bodyparser-json-unlimited",
+    "severity": "medium",
+    "title": "bodyParser.json without size limit",
+    "description": "Parsing request bodies without explicit limits can enable DoS via large payloads.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "bodyParser\\.json\\s*\\(\\s*\\)",
+      "message": "bodyParser.json() used without options"
+    }
+  },
+  {
+    "id": "express/express-json-unlimited",
+    "severity": "medium",
+    "title": "express.json without size limit",
+    "description": "Parsing request bodies without explicit limits can enable DoS via large payloads.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "express\\.json\\s*\\(\\s*\\)",
+      "message": "express.json() used without options"
+    }
+  },
+  {
+    "id": "express/express-urlencoded-unlimited",
+    "severity": "medium",
+    "title": "express.urlencoded without size limit",
+    "description": "Parsing urlencoded bodies without explicit limits can enable DoS via large payloads.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "express\\.urlencoded\\s*\\(\\s*\\)",
+      "message": "express.urlencoded() used without options"
+    }
+  },
+  {
+    "id": "express/multer-any",
+    "severity": "medium",
+    "title": "multer upload.any usage",
+    "description": "Accepting any files without validation can enable abuse.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\.any\\s*\\(",
+      "message": "multer any() usage detected"
+    }
+  },
+  {
+    "id": "express/file-upload-temp-dir",
+    "severity": "low",
+    "title": "File uploads stored in /tmp",
+    "description": "Storing uploads in /tmp can be risky depending on host constraints; ensure cleanup and permissions.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "['\"]/tmp/",
+      "message": "Reference to /tmp detected"
+    }
+  },
+  {
+    "id": "express/sql-string-concat",
+    "severity": "high",
+    "title": "Potential SQL string concatenation",
+    "description": "Building SQL queries via string concatenation can lead to injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "SELECT\\s+[^;]*\\+\\s*(req\\.|userInput)",
+      "message": "SQL string concatenation detected"
+    }
+  },
+  {
+    "id": "express/mongodb-where",
+    "severity": "high",
+    "title": "MongoDB $where usage",
+    "description": "$where executes JavaScript on the server and can enable injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\$where\\b",
+      "message": "$where usage detected"
+    }
+  },
+  {
+    "id": "express/regex-from-user-input",
+    "severity": "medium",
+    "title": "RegExp constructed from dynamic input",
+    "description": "Constructing regular expressions from untrusted input can lead to ReDoS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "new\\s+RegExp\\s*\\([^\\)]*(req\\.query|searchParams\\.get|userInput)",
+      "message": "new RegExp appears to use dynamic input"
+    }
+  },
+  {
+    "id": "express/open-redirect",
+    "severity": "high",
+    "title": "Open redirect pattern",
+    "description": "Redirecting to user-controlled URLs can enable phishing and token leakage.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\b(res\\.redirect|redirect)\\s*\\([^\\)]*(req\\.query|searchParams\\.get|next)",
+      "message": "Redirect appears to use user input"
+    }
+  },
+  {
+    "id": "express/insecure-redirect-status",
+    "severity": "low",
+    "title": "Redirect status 301/302",
+    "description": "Permanent redirects can cache unsafe destinations; ensure redirect targets are safe.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\b(res\\.redirect|redirect)\\s*\\(\\s*(301|302)",
+      "message": "Redirect uses 301/302"
+    }
+  },
+  {
+    "id": "express/debug-enabled",
+    "severity": "medium",
+    "title": "Debug enabled",
+    "description": "Debug mode can leak sensitive information.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bdebug\\s*:\\s*true",
+      "message": "debug appears to be enabled"
+    }
+  },
+  {
+    "id": "express/morgan-dev",
+    "severity": "low",
+    "title": "morgan dev logging",
+    "description": "Verbose request logging can include sensitive data.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "morgan\\s*\\(\\s*['\"]dev['\"]",
+      "message": "morgan dev logging detected"
+    }
+  },
+  {
+    "id": "express/sensitive-header-logging",
+    "severity": "high",
+    "title": "Authorization header logged",
+    "description": "Logging Authorization headers can leak tokens.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "authorization\\b[^\\n\\r]{0,40}(console\\.|logger\\.|log\\s*\\()",
+      "message": "Authorization appears to be logged"
+    }
+  },
+  {
+    "id": "express/console-log-env",
+    "severity": "medium",
+    "title": "Logging environment variables",
+    "description": "Logging process.env can leak secrets into logs.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "process\\.env",
+      "message": "process.env referenced"
+    }
+  },
+  {
+    "id": "express/eval",
+    "severity": "high",
+    "title": "eval usage",
+    "description": "eval can enable code injection vulnerabilities and is strongly discouraged.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\beval\\s*\\(",
+      "message": "eval detected; avoid dynamic code execution"
+    }
+  },
+  {
+    "id": "express/new-function",
+    "severity": "high",
+    "title": "Function constructor usage",
+    "description": "new Function can enable code injection vulnerabilities and is strongly discouraged.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bnew\\s+Function\\s*\\(",
+      "message": "new Function detected; avoid dynamic code execution"
+    }
+  },
+  {
+    "id": "express/child-process-exec",
+    "severity": "high",
+    "title": "child_process exec usage",
+    "description": "Executing shell commands can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bexec\\s*\\(",
+      "message": "exec detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "express/child-process-execsync",
+    "severity": "high",
+    "title": "child_process execSync usage",
+    "description": "Executing shell commands can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bexecSync\\s*\\(",
+      "message": "execSync detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "express/child-process-spawn",
+    "severity": "high",
+    "title": "child_process spawn usage",
+    "description": "Spawning subprocesses can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bspawn\\s*\\(",
+      "message": "spawn detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "express/child-process-spawnsync",
+    "severity": "high",
+    "title": "child_process spawnSync usage",
+    "description": "Spawning subprocesses can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bspawnSync\\s*\\(",
+      "message": "spawnSync detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "express/child-process-fork",
+    "severity": "medium",
+    "title": "child_process fork usage",
+    "description": "Forking subprocesses can increase attack surface; ensure the child module path is safe.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bfork\\s*\\(",
+      "message": "fork detected; ensure the child module path is safe"
+    }
+  },
+  {
+    "id": "express/crypto-md5",
+    "severity": "medium",
+    "title": "MD5 hashing",
+    "description": "MD5 is considered cryptographically broken and unsuitable for security-sensitive use.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "createHash\\s*\\(\\s*['\"]md5['\"]",
+      "message": "MD5 hashing detected; avoid for security-sensitive use"
+    }
+  },
+  {
+    "id": "express/crypto-sha1",
+    "severity": "low",
+    "title": "SHA-1 hashing",
+    "description": "SHA-1 is considered weak for collision resistance and should be avoided for new security-sensitive uses.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "createHash\\s*\\(\\s*['\"]sha1['\"]",
+      "message": "SHA-1 hashing detected; avoid for security-sensitive use"
+    }
+  },
+  {
+    "id": "express/math-random",
+    "severity": "medium",
+    "title": "Math.random usage",
+    "description": "Math.random is not cryptographically secure and should not be used for secrets or tokens.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Math\\.random\\s*\\(",
+      "message": "Math.random detected; avoid for security-sensitive use"
+    }
+  },
+  {
+    "id": "express/http-url",
+    "severity": "medium",
+    "title": "Plain HTTP URL",
+    "description": "Using HTTP can expose data to interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "['\"]http://",
+      "message": "Plain http:// URL detected"
+    }
+  },
+  {
+    "id": "express/tls-reject-unauthorized-zero",
+    "severity": "high",
+    "title": "TLS verification disabled",
+    "description": "Setting NODE_TLS_REJECT_UNAUTHORIZED=0 disables TLS verification and enables MITM attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "NODE_TLS_REJECT_UNAUTHORIZED[^=]{0,20}=\\s*['\"]0['\"]",
+      "message": "NODE_TLS_REJECT_UNAUTHORIZED is set to 0"
+    }
+  },
+  {
+    "id": "express/reject-unauthorized-false",
+    "severity": "high",
+    "title": "rejectUnauthorized set to false",
+    "description": "Setting rejectUnauthorized: false disables TLS certificate verification.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "rejectUnauthorized\\s*:\\s*false",
+      "message": "rejectUnauthorized appears to be false"
+    }
+  },
+  {
+    "id": "express/path-traversal-join",
+    "severity": "high",
+    "title": "path.join with user input",
+    "description": "Joining paths with user-controlled input can enable path traversal.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "path\\.join\\s*\\([^\\)]*(req\\.params|req\\.query|userInput)",
+      "message": "path.join appears to use user input"
+    }
+  },
+  {
+    "id": "express/fs-readfile-user-input",
+    "severity": "high",
+    "title": "fs.readFile with user input",
+    "description": "Reading files using user-controlled paths can enable file disclosure.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "readFile(Sync)?\\s*\\([^\\)]*(req\\.params|req\\.query|userInput)",
+      "message": "fs.readFile appears to use user input"
+    }
+  },
+  {
+    "id": "express/fs-writefile-user-input",
+    "severity": "high",
+    "title": "fs.writeFile with user input",
+    "description": "Writing files using user-controlled paths can enable overwrites.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "writeFile(Sync)?\\s*\\([^\\)]*(req\\.params|req\\.query|userInput)",
+      "message": "fs.writeFile appears to use user input"
+    }
+  },
+  {
+    "id": "express/ssrf-localhost",
+    "severity": "high",
+    "title": "Potential SSRF to localhost",
+    "description": "Requesting localhost or metadata IPs can enable SSRF attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "http://(localhost|127\\.0\\.0\\.1)|169\\.254\\.169\\.254",
+      "message": "Potential SSRF target detected"
+    }
+  },
+  {
+    "id": "express/template-ejs",
+    "severity": "low",
+    "title": "EJS templates enabled",
+    "description": "Template engines can introduce injection risks depending on usage.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bview engine\\b[^\\n\\r]*ejs",
+      "message": "EJS view engine referenced"
+    }
+  },
+  {
+    "id": "express/xml-parser",
+    "severity": "medium",
+    "title": "XML parsing",
+    "description": "Parsing XML can be risky without secure parser configuration.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "xml2js|fast-xml-parser|libxml",
+      "message": "XML parser referenced"
+    }
+  },
+  {
+    "id": "express/graphql-playground-enabled",
+    "severity": "medium",
+    "title": "GraphQL playground enabled",
+    "description": "Exposing GraphQL playground in production can leak schema information.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "graphql-playground|ApolloServer\\([^\\)]*introspection\\s*:\\s*true",
+      "message": "GraphQL playground or introspection appears enabled"
+    }
+  },
+  {
+    "id": "express/rate-limit-missing",
+    "severity": "medium",
+    "title": "No rate limiting",
+    "description": "Without rate limiting, endpoints may be more susceptible to brute force and abuse.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "rateLimit\\s*\\(",
+      "message": "rateLimit usage detected; ensure it is applied to sensitive routes"
+    }
+  },
+  {
+    "id": "express/csrf-disabled",
+    "severity": "high",
+    "title": "CSRF protection disabled",
+    "description": "Disabling CSRF protections can enable cross-site request forgery.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "csrf\\s*:\\s*false",
+      "message": "CSRF appears disabled"
+    }
+  },
+  {
+    "id": "express/insecure-session-secret",
+    "severity": "high",
+    "title": "Hardcoded session secret",
+    "description": "Hardcoded session secrets increase risk of session forgery.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "secret\\s*:\\s*['\"][^'\"]{8,}['\"]",
+      "message": "A hardcoded secret-like value was detected"
+    }
+  },
+  {
+    "id": "express/passport-local",
+    "severity": "low",
+    "title": "passport-local used",
+    "description": "Ensure password handling uses strong hashing and secure session management.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "passport-local",
+      "message": "passport-local referenced"
+    }
+  },
+  {
+    "id": "express/allowlist-missing",
+    "severity": "low",
+    "title": "No explicit allowlist",
+    "description": "Allowlisting inputs and origins can reduce attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\ballowlist\\b",
+      "message": "allowlist referenced"
+    }
+  },
+  {
+    "id": "express/request-logging-body",
+    "severity": "high",
+    "title": "Request body logged",
+    "description": "Logging request bodies can leak secrets and PII.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "req\\.body",
+      "message": "req.body referenced; ensure it is not logged"
+    }
+  },
+  {
+    "id": "express/deserialize-unsafe-json",
+    "severity": "medium",
+    "title": "JSON.parse on request body",
+    "description": "Blindly parsing request bodies can be risky; ensure schema validation and size limits.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "JSON\\.parse\\s*\\(\\s*req\\.body",
+      "message": "JSON.parse(req.body) detected; ensure validation and limits"
+    }
+  },
+  {
+    "id": "express/new-regexp-user-input",
+    "severity": "medium",
+    "title": "RegExp from dynamic input",
+    "description": "Constructing regular expressions from untrusted input can lead to ReDoS or unintended matches.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "new\\s+RegExp\\s*\\([^\\)]*(userInput|req\\.query|searchParams\\.get)",
+      "message": "new RegExp appears to use dynamic input"
+    }
   }
 ]

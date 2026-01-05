@@ -52,7 +52,6 @@ jobs:
           pnpm -C packages/analyzers/javascript exec npm pkg set "dependencies.@reliability-works/core=$VERSION"
            pnpm -C packages/cli exec npm pkg set "dependencies.@reliability-works/core=$VERSION" "dependencies.@reliability-works/analyzer-javascript=$VERSION" "dependencies.@reliability-works/ruleset-nextjs=$VERSION" "dependencies.@reliability-works/ruleset-react-native=$VERSION" "dependencies.@reliability-works/ruleset-express=$VERSION" "dependencies.@reliability-works/ruleset-sveltekit=$VERSION"
 
-
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -34,5 +34,67 @@
       "pattern": "\\brevalidate\\s*:\\s*0\\b",
       "message": "revalidate is set to 0"
     }
+  },
+  {
+    "id": "nextjs/poweredbyheader-enabled",
+    "severity": "low",
+    "title": "X-Powered-By header enabled",
+    "description": "The X-Powered-By header can reveal implementation details. Consider disabling it in production.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "poweredByHeader\\s*:\\s*true",
+      "message": "poweredByHeader appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/typescript-ignore-build-errors",
+    "severity": "high",
+    "title": "TypeScript build errors ignored",
+    "description": "Ignoring TypeScript build errors can allow unsafe or broken code paths to ship to production.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "typescript\\s*:\\s*\\{[^}]*\\bignoreBuildErrors\\s*:\\s*true",
+      "flags": "s",
+      "message": "typescript.ignoreBuildErrors appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/eslint-ignore-during-builds",
+    "severity": "medium",
+    "title": "ESLint checks ignored during builds",
+    "description": "Ignoring ESLint checks during builds can let insecure patterns ship undetected.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "eslint\\s*:\\s*\\{[^}]*\\bignoreDuringBuilds\\s*:\\s*true",
+      "flags": "s",
+      "message": "eslint.ignoreDuringBuilds appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/images-dangerously-allow-svg",
+    "severity": "high",
+    "title": "SVGs allowed in next/image",
+    "description": "Allowing SVGs can increase XSS risk if SVG content is not tightly controlled.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "dangerouslyAllowSVG\\s*:\\s*true",
+      "message": "images.dangerouslyAllowSVG appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/dangerously-set-inner-html",
+    "severity": "medium",
+    "title": "dangerouslySetInnerHTML usage",
+    "description": "dangerouslySetInnerHTML renders raw HTML into the page. If the value is derived from user input, it can enable XSS unless sanitized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "dangerouslySetInnerHTML\\s*=\\s*\\{\\{",
+      "message": "dangerouslySetInnerHTML renders raw HTML; ensure the content is sanitized"
+    }
   }
 ]

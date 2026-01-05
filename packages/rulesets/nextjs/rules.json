@@ -12,6 +12,186 @@
     }
   },
   {
+    "id": "nextjs/poweredbyheader-enabled",
+    "severity": "low",
+    "title": "X-Powered-By header enabled",
+    "description": "The X-Powered-By header can reveal implementation details. Consider disabling it in production.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "poweredByHeader\\s*:\\s*true",
+      "message": "poweredByHeader appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/react-strict-mode-disabled",
+    "severity": "low",
+    "title": "React strict mode disabled",
+    "description": "Disabling React strict mode can reduce signals during development and may allow risky patterns to persist.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "reactStrictMode\\s*:\\s*false",
+      "message": "reactStrictMode appears to be disabled"
+    }
+  },
+  {
+    "id": "nextjs/compress-disabled",
+    "severity": "low",
+    "title": "HTTP compression disabled",
+    "description": "Disabling compression can increase response sizes and degrade performance.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "\\bcompress\\s*:\\s*false",
+      "message": "compress appears to be disabled"
+    }
+  },
+  {
+    "id": "nextjs/asset-prefix-http",
+    "severity": "medium",
+    "title": "assetPrefix uses plain HTTP",
+    "description": "Using an HTTP assetPrefix can enable MITM attacks on static assets.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "assetPrefix\\s*:\\s*['\"]http://",
+      "message": "assetPrefix appears to be configured with http://"
+    }
+  },
+  {
+    "id": "nextjs/typescript-ignore-build-errors",
+    "severity": "high",
+    "title": "TypeScript build errors ignored",
+    "description": "Ignoring TypeScript build errors can allow unsafe or broken code paths to ship to production.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "typescript\\s*:\\s*\\{[^}]*\\bignoreBuildErrors\\s*:\\s*true",
+      "flags": "s",
+      "message": "typescript.ignoreBuildErrors appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/eslint-ignore-during-builds",
+    "severity": "medium",
+    "title": "ESLint checks ignored during builds",
+    "description": "Ignoring ESLint checks during builds can let insecure patterns ship undetected.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "eslint\\s*:\\s*\\{[^}]*\\bignoreDuringBuilds\\s*:\\s*true",
+      "flags": "s",
+      "message": "eslint.ignoreDuringBuilds appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/images-dangerously-allow-svg",
+    "severity": "high",
+    "title": "SVGs allowed in next/image",
+    "description": "Allowing SVGs can increase XSS risk if SVG content is not tightly controlled.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "dangerouslyAllowSVG\\s*:\\s*true",
+      "message": "images.dangerouslyAllowSVG appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/images-remote-http",
+    "severity": "medium",
+    "title": "Remote images allowed over HTTP",
+    "description": "Allowing remote images over HTTP can enable MITM attacks on image content.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "protocol\\s*:\\s*['\"]http['\"]",
+      "message": "next/image remotePatterns appears to allow http"
+    }
+  },
+  {
+    "id": "nextjs/images-domains-wildcard",
+    "severity": "medium",
+    "title": "Wildcard image domain configured",
+    "description": "Allowing images from any domain increases the risk of unexpected content and tracking.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "domains\\s*:\\s*\\[[^\\]]*['\"]\\*['\"]",
+      "message": "images.domains appears to include a wildcard"
+    }
+  },
+  {
+    "id": "nextjs/headers-cors-allow-origin-star",
+    "severity": "high",
+    "title": "CORS allow-origin '*' in next.config",
+    "description": "Allowing origin '*' can expose endpoints to cross-origin callers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "Access-Control-Allow-Origin[^\\n\\r]*\\bvalue\\s*:\\s*['\"]\\*['\"]",
+      "message": "Access-Control-Allow-Origin appears to be set to '*'"
+    }
+  },
+  {
+    "id": "nextjs/headers-cors-allow-credentials-true",
+    "severity": "high",
+    "title": "CORS allow-credentials true in next.config",
+    "description": "Allowing credentials in CORS responses can increase risk when combined with permissive origins.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "Access-Control-Allow-Credentials[^\\n\\r]*\\bvalue\\s*:\\s*['\"]true['\"]",
+      "message": "Access-Control-Allow-Credentials appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/headers-cors-allow-headers-star",
+    "severity": "medium",
+    "title": "CORS allow-headers '*' in next.config",
+    "description": "Allowing any headers in CORS responses can broaden attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "Access-Control-Allow-Headers[^\\n\\r]*\\bvalue\\s*:\\s*['\"]\\*['\"]",
+      "message": "Access-Control-Allow-Headers appears to be set to '*'"
+    }
+  },
+  {
+    "id": "nextjs/headers-cors-allow-methods-star",
+    "severity": "medium",
+    "title": "CORS allow-methods '*' in next.config",
+    "description": "Allowing any methods in CORS responses can broaden attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "Access-Control-Allow-Methods[^\\n\\r]*\\bvalue\\s*:\\s*['\"]\\*['\"]",
+      "message": "Access-Control-Allow-Methods appears to be set to '*'"
+    }
+  },
+  {
+    "id": "nextjs/public-source-maps",
+    "severity": "medium",
+    "title": "Source maps in public directory",
+    "description": "Shipping source maps in public/ can expose source code and application internals.",
+    "matcher": {
+      "type": "file_presence",
+      "paths": ["public/**/*.map"],
+      "message": "Source map file present under public/"
+    }
+  },
+  {
+    "id": "nextjs/public-private-key-file",
+    "severity": "high",
+    "title": "Key material file in public directory",
+    "description": "Key files under public/ may be exposed to clients if served.",
+    "matcher": {
+      "type": "file_presence",
+      "paths": ["public/**/*.{pem,key}"],
+      "message": "Potential key file present under public/"
+    }
+  },
+  {
     "id": "nextjs/next-public-secret-name",
     "severity": "high",
     "title": "Potential secret exposed via NEXT_PUBLIC_ env",
@@ -33,6 +213,510 @@
       "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
       "pattern": "\\brevalidate\\s*:\\s*0\\b",
       "message": "revalidate is set to 0"
+    }
+  },
+  {
+    "id": "nextjs/dangerously-set-inner-html",
+    "severity": "medium",
+    "title": "dangerouslySetInnerHTML usage",
+    "description": "dangerouslySetInnerHTML renders raw HTML into the page. If the value is derived from user input, it can enable XSS unless sanitized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "dangerouslySetInnerHTML\\s*=\\s*\\{\\{",
+      "message": "dangerouslySetInnerHTML renders raw HTML; ensure the content is sanitized"
+    }
+  },
+  {
+    "id": "nextjs/dom-innerhtml-assignment",
+    "severity": "medium",
+    "title": "innerHTML assignment",
+    "description": "Assigning to innerHTML can lead to XSS if the content is not sanitized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\binnerHTML\\s*=",
+      "message": "innerHTML assignment detected; ensure content is sanitized"
+    }
+  },
+  {
+    "id": "nextjs/dom-outerhtml-assignment",
+    "severity": "medium",
+    "title": "outerHTML assignment",
+    "description": "Assigning to outerHTML can lead to XSS if the content is not sanitized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bouterHTML\\s*=",
+      "message": "outerHTML assignment detected; ensure content is sanitized"
+    }
+  },
+  {
+    "id": "nextjs/dom-insertadjacenthtml",
+    "severity": "medium",
+    "title": "insertAdjacentHTML usage",
+    "description": "insertAdjacentHTML can lead to XSS if the inserted content is not sanitized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\binsertAdjacentHTML\\s*\\(",
+      "message": "insertAdjacentHTML detected; ensure content is sanitized"
+    }
+  },
+  {
+    "id": "nextjs/document-write",
+    "severity": "medium",
+    "title": "document.write usage",
+    "description": "document.write can enable XSS and should generally be avoided.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "document\\.write\\s*\\(",
+      "message": "document.write detected; avoid raw HTML injection"
+    }
+  },
+  {
+    "id": "nextjs/document-writeln",
+    "severity": "medium",
+    "title": "document.writeln usage",
+    "description": "document.writeln can enable XSS and should generally be avoided.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "document\\.writeln\\s*\\(",
+      "message": "document.writeln detected; avoid raw HTML injection"
+    }
+  },
+  {
+    "id": "nextjs/csp-unsafe-inline",
+    "severity": "high",
+    "title": "CSP allows unsafe-inline",
+    "description": "CSP with unsafe-inline weakens script protections and increases XSS risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Content-Security-Policy[^\\n\\r]*unsafe-inline",
+      "message": "Content-Security-Policy includes unsafe-inline"
+    }
+  },
+  {
+    "id": "nextjs/csp-unsafe-eval",
+    "severity": "high",
+    "title": "CSP allows unsafe-eval",
+    "description": "CSP with unsafe-eval weakens script protections and increases XSS risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Content-Security-Policy[^\\n\\r]*unsafe-eval",
+      "message": "Content-Security-Policy includes unsafe-eval"
+    }
+  },
+  {
+    "id": "nextjs/postmessage-wildcard-origin",
+    "severity": "medium",
+    "title": "postMessage to wildcard origin",
+    "description": "Using postMessage with targetOrigin '*' can leak data to unexpected receivers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "postMessage\\s*\\([^\\)]*,\\s*['\"]\\*['\"]",
+      "message": "postMessage targetOrigin appears to be '*'"
+    }
+  },
+  {
+    "id": "nextjs/eval",
+    "severity": "high",
+    "title": "eval usage",
+    "description": "eval can enable code injection vulnerabilities and is strongly discouraged.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\beval\\s*\\(",
+      "message": "eval detected; avoid dynamic code execution"
+    }
+  },
+  {
+    "id": "nextjs/new-function",
+    "severity": "high",
+    "title": "Function constructor usage",
+    "description": "new Function can enable code injection vulnerabilities and is strongly discouraged.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bnew\\s+Function\\s*\\(",
+      "message": "new Function detected; avoid dynamic code execution"
+    }
+  },
+  {
+    "id": "nextjs/settimeout-string",
+    "severity": "medium",
+    "title": "setTimeout called with a string",
+    "description": "setTimeout with a string behaves like eval and can enable injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bsetTimeout\\s*\\(\\s*['\"]",
+      "message": "setTimeout appears to be called with a string"
+    }
+  },
+  {
+    "id": "nextjs/setinterval-string",
+    "severity": "medium",
+    "title": "setInterval called with a string",
+    "description": "setInterval with a string behaves like eval and can enable injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bsetInterval\\s*\\(\\s*['\"]",
+      "message": "setInterval appears to be called with a string"
+    }
+  },
+  {
+    "id": "nextjs/node-tls-reject-unauthorized-zero",
+    "severity": "high",
+    "title": "TLS verification disabled",
+    "description": "Setting NODE_TLS_REJECT_UNAUTHORIZED=0 disables TLS verification and enables MITM attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "NODE_TLS_REJECT_UNAUTHORIZED[^=]{0,20}=\\s*['\"]0['\"]",
+      "message": "NODE_TLS_REJECT_UNAUTHORIZED is set to 0"
+    }
+  },
+  {
+    "id": "nextjs/https-agent-reject-unauthorized-false",
+    "severity": "high",
+    "title": "HTTPS agent with rejectUnauthorized: false",
+    "description": "Disabling TLS verification enables man-in-the-middle attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "rejectUnauthorized\\s*:\\s*false",
+      "message": "rejectUnauthorized appears to be false"
+    }
+  },
+  {
+    "id": "nextjs/fetch-http-url",
+    "severity": "medium",
+    "title": "fetch to plain HTTP URL",
+    "description": "Making requests over HTTP can expose sensitive data to interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bfetch\\s*\\(\\s*['\"]http://",
+      "message": "fetch appears to target an http:// URL"
+    }
+  },
+  {
+    "id": "nextjs/axios-http-url",
+    "severity": "medium",
+    "title": "axios to plain HTTP URL",
+    "description": "Making requests over HTTP can expose sensitive data to interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\baxios\\.(get|post|put|patch|delete|request)\\s*\\(\\s*['\"]http://",
+      "message": "axios appears to target an http:// URL"
+    }
+  },
+  {
+    "id": "nextjs/child-process-exec",
+    "severity": "high",
+    "title": "child_process exec usage",
+    "description": "Executing shell commands can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bexec\\s*\\(",
+      "message": "exec detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "nextjs/child-process-execsync",
+    "severity": "high",
+    "title": "child_process execSync usage",
+    "description": "Executing shell commands can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bexecSync\\s*\\(",
+      "message": "execSync detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "nextjs/child-process-spawn",
+    "severity": "high",
+    "title": "child_process spawn usage",
+    "description": "Spawning subprocesses can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bspawn\\s*\\(",
+      "message": "spawn detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "nextjs/child-process-spawnsync",
+    "severity": "high",
+    "title": "child_process spawnSync usage",
+    "description": "Spawning subprocesses can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bspawnSync\\s*\\(",
+      "message": "spawnSync detected; ensure inputs are not user-controlled"
+    }
+  },
+  {
+    "id": "nextjs/child-process-fork",
+    "severity": "medium",
+    "title": "child_process fork usage",
+    "description": "Forking subprocesses can increase attack surface; ensure the child module path is safe.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bfork\\s*\\(",
+      "message": "fork detected; ensure the child module path is safe"
+    }
+  },
+  {
+    "id": "nextjs/crypto-md5",
+    "severity": "medium",
+    "title": "MD5 hashing",
+    "description": "MD5 is considered cryptographically broken and unsuitable for security-sensitive use.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "createHash\\s*\\(\\s*['\"]md5['\"]",
+      "message": "MD5 hashing detected; avoid for security-sensitive use"
+    }
+  },
+  {
+    "id": "nextjs/crypto-sha1",
+    "severity": "low",
+    "title": "SHA-1 hashing",
+    "description": "SHA-1 is considered weak for collision resistance and should be avoided for new security-sensitive uses.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "createHash\\s*\\(\\s*['\"]sha1['\"]",
+      "message": "SHA-1 hashing detected; avoid for security-sensitive use"
+    }
+  },
+  {
+    "id": "nextjs/math-random",
+    "severity": "medium",
+    "title": "Math.random usage",
+    "description": "Math.random is not cryptographically secure and should not be used for secrets or tokens.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Math\\.random\\s*\\(",
+      "message": "Math.random detected; avoid for security-sensitive use"
+    }
+  },
+  {
+    "id": "nextjs/console-log-env",
+    "severity": "medium",
+    "title": "Logging environment variables",
+    "description": "Logging process.env can leak secrets into logs.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "console\\.(log|info|debug|warn|error)\\s*\\([^\\)]*process\\.env",
+      "message": "process.env appears in console output"
+    }
+  },
+  {
+    "id": "nextjs/localstorage-sensitive-key",
+    "severity": "high",
+    "title": "Potential secret stored in localStorage",
+    "description": "localStorage is not suitable for storing secrets; prefer HttpOnly cookies or secure storage patterns.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "localStorage\\.setItem\\(\\s*['\\\"][^'\\\"]*(token|secret|key|password)[^'\\\"]*['\\\"]",
+      "message": "localStorage key name suggests sensitive data storage"
+    }
+  },
+  {
+    "id": "nextjs/sessionstorage-sensitive-key",
+    "severity": "high",
+    "title": "Potential secret stored in sessionStorage",
+    "description": "sessionStorage is not suitable for storing secrets; prefer HttpOnly cookies or secure storage patterns.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "sessionStorage\\.setItem\\(\\s*['\\\"][^'\\\"]*(token|secret|key|password)[^'\\\"]*['\\\"]",
+      "message": "sessionStorage key name suggests sensitive data storage"
+    }
+  },
+  {
+    "id": "nextjs/document-cookie-assignment",
+    "severity": "medium",
+    "title": "document.cookie assignment",
+    "description": "Setting cookies via document.cookie increases the risk of exposing session tokens to XSS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "document\\.cookie\\s*=",
+      "message": "document.cookie assignment detected"
+    }
+  },
+  {
+    "id": "nextjs/cookie-secure-false",
+    "severity": "high",
+    "title": "Cookie secure flag disabled",
+    "description": "Cookies without secure flag can be sent over HTTP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bsecure\\s*:\\s*false",
+      "message": "secure: false detected on a cookie-like object"
+    }
+  },
+  {
+    "id": "nextjs/cookie-httponly-false",
+    "severity": "high",
+    "title": "Cookie httpOnly flag disabled",
+    "description": "Cookies without httpOnly can be accessed by JavaScript and stolen via XSS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bhttpOnly\\s*:\\s*false",
+      "message": "httpOnly: false detected on a cookie-like object"
+    }
+  },
+  {
+    "id": "nextjs/cookie-samesite-none",
+    "severity": "medium",
+    "title": "Cookie SameSite set to none",
+    "description": "SameSite=none can enable cross-site cookie sending; ensure secure and CSRF protections.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "sameSite\\s*:\\s*['\"]none['\"]",
+      "message": "sameSite appears to be set to 'none'"
+    }
+  },
+  {
+    "id": "nextjs/cookie-domain-dot",
+    "severity": "medium",
+    "title": "Cookie domain set to a dot-prefixed domain",
+    "description": "Setting a cookie for a wide domain can increase exposure across subdomains.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "domain\\s*:\\s*['\"]\\.[^'\"]+['\"]",
+      "message": "Cookie domain appears to be set for all subdomains"
+    }
+  },
+  {
+    "id": "nextjs/cors-origin-wildcard",
+    "severity": "high",
+    "title": "CORS origin '*' configured",
+    "description": "Allowing origin '*' can expose endpoints to cross-origin callers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\borigin\\s*:\\s*['\"]\\*['\"]",
+      "message": "CORS origin appears to be configured as '*'"
+    }
+  },
+  {
+    "id": "nextjs/header-location-from-user-input",
+    "severity": "high",
+    "title": "Location header from user input",
+    "description": "Setting Location from user-controlled input can enable open redirects and header injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "setHeader\\s*\\(\\s*['\"]Location['\"][^\\)]*(req\\.query|searchParams\\.get)",
+      "message": "Location header appears to use user-controlled input"
+    }
+  },
+  {
+    "id": "nextjs/redirect-from-user-input",
+    "severity": "high",
+    "title": "Redirect destination from user input",
+    "description": "Redirecting to user-controlled URLs can enable open redirects.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bredirect\\s*\\([^\\)]*(searchParams\\.get|req\\.query|nextUrl\\.searchParams\\.get)",
+      "message": "redirect appears to use user-controlled input"
+    }
+  },
+  {
+    "id": "nextjs/nextauth-debug-enabled",
+    "severity": "medium",
+    "title": "NextAuth debug enabled",
+    "description": "Enabling debug logs can leak sensitive information.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bdebug\\s*:\\s*true",
+      "message": "debug appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/yaml-load",
+    "severity": "medium",
+    "title": "YAML load/parse usage",
+    "description": "Parsing YAML from untrusted input can be risky depending on the parser configuration.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\byaml\\.(load|safeLoad)\\s*\\(",
+      "message": "YAML load/parse detected; ensure input is trusted"
+    }
+  },
+  {
+    "id": "nextjs/vm-runinthiscontext",
+    "severity": "high",
+    "title": "vm.runInThisContext usage",
+    "description": "Running arbitrary code via Node vm can enable code execution vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bvm\\.runInThisContext\\s*\\(",
+      "message": "vm.runInThisContext detected; avoid dynamic code execution"
+    }
+  },
+  {
+    "id": "nextjs/vm-script",
+    "severity": "high",
+    "title": "vm.Script usage",
+    "description": "Compiling code via Node vm can enable code execution vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bnew\\s+vm\\.Script\\s*\\(",
+      "message": "new vm.Script detected; avoid dynamic code execution"
+    }
+  },
+  {
+    "id": "nextjs/deserialize-unsafe-json",
+    "severity": "medium",
+    "title": "JSON.parse on request body",
+    "description": "Blindly parsing request bodies can be risky; ensure schema validation and size limits.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "JSON\\.parse\\s*\\(\\s*req\\.body",
+      "message": "JSON.parse(req.body) detected; ensure validation and limits"
+    }
+  },
+  {
+    "id": "nextjs/new-regexp-user-input",
+    "severity": "medium",
+    "title": "RegExp from dynamic input",
+    "description": "Constructing regular expressions from untrusted input can lead to ReDoS or unintended matches.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "new\\s+RegExp\\s*\\([^\\)]*(userInput|req\\.query|searchParams\\.get)",
+      "message": "new RegExp appears to use dynamic input"
     }
   }
 ]

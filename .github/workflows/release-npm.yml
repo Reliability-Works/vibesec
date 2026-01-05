@@ -47,10 +47,11 @@ jobs:
           pnpm -C packages/rulesets/react-native exec npm version "$VERSION" --no-git-tag-version --allow-same-version
           pnpm -C packages/rulesets/express exec npm version "$VERSION" --no-git-tag-version --allow-same-version
           pnpm -C packages/rulesets/sveltekit exec npm version "$VERSION" --no-git-tag-version --allow-same-version
+          pnpm -C packages/rulesets/astro exec npm version "$VERSION" --no-git-tag-version --allow-same-version
           pnpm -C packages/cli exec npm version "$VERSION" --no-git-tag-version --allow-same-version
 
           pnpm -C packages/analyzers/javascript exec npm pkg set "dependencies.@reliabilityworks/core=$VERSION"
-          pnpm -C packages/cli exec npm pkg set "dependencies.@reliabilityworks/core=$VERSION" "dependencies.@reliabilityworks/analyzer-javascript=$VERSION" "dependencies.@reliabilityworks/ruleset-nextjs=$VERSION" "dependencies.@reliabilityworks/ruleset-react-native=$VERSION" "dependencies.@reliabilityworks/ruleset-express=$VERSION" "dependencies.@reliabilityworks/ruleset-sveltekit=$VERSION"
+          pnpm -C packages/cli exec npm pkg set "dependencies.@reliabilityworks/core=$VERSION" "dependencies.@reliabilityworks/analyzer-javascript=$VERSION" "dependencies.@reliabilityworks/ruleset-nextjs=$VERSION" "dependencies.@reliabilityworks/ruleset-react-native=$VERSION" "dependencies.@reliabilityworks/ruleset-express=$VERSION" "dependencies.@reliabilityworks/ruleset-sveltekit=$VERSION" "dependencies.@reliabilityworks/ruleset-astro=$VERSION"
 
       - name: Publish to npm
         env:
@@ -69,5 +70,6 @@ jobs:
           npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/react-native
           npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/express
           npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/sveltekit
+          npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/astro
           npm publish --access public --tag "$DIST_TAG" ./packages/analyzers/javascript
           npm publish --access public --tag "$DIST_TAG" ./packages/cli

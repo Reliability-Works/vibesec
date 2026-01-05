@@ -1,5 +1,5 @@
 {
-  "name": "@reliability-works/analyzer-javascript",
+  "name": "@reliabilityworks/analyzer-javascript",
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,6 +10,6 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@reliability-works/core": "workspace:*"
+    "@reliabilityworks/core": "workspace:*"
   }
 }

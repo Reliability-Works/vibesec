@@ -1,4 +1,4 @@
-import type { Rule } from '@reliability-works/core'
+import type { Rule } from '@reliabilityworks/core'
 
 export const JAVASCRIPT_RULES: Rule[] = [
   {

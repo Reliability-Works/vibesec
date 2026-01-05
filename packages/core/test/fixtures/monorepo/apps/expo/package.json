@@ -1,0 +1,7 @@
+{
+  "name": "expo",
+  "private": true,
+  "dependencies": {
+    "expo": "50.0.0"
+  }
+}

@@ -13,4 +13,6 @@ test('detectFrameworksInWorkspace finds nested frameworks', async () => {
   assert.ok(ids.includes('express'))
   assert.ok(ids.includes('sveltekit'))
   assert.ok(ids.includes('astro'))
+  assert.ok(ids.includes('react-native'))
+  assert.ok(ids.includes('expo'))
 })

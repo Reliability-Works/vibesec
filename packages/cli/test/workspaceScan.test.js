@@ -38,4 +38,18 @@ test('workspace scan scopes framework rules to project roots', async () => {
 
   assert.ok(astroPaths.includes('apps/astro/src/pages/index.astro'))
   assert.equal(astroPaths.includes('apps/web/decoy.astro'), false)
+
+  const rnManifestPaths = result.findings
+    .filter((finding) => finding.ruleId === 'rn/cleartext-traffic')
+    .map((finding) => finding.location.path)
+
+  assert.ok(rnManifestPaths.includes('apps/rn/android/app/AndroidManifest.xml'))
+  assert.equal(rnManifestPaths.includes('apps/web/android/app/AndroidManifest.xml'), false)
+
+  const expoTokenPaths = result.findings
+    .filter((finding) => finding.ruleId === 'rn/asyncstorage-token-key')
+    .map((finding) => finding.location.path)
+
+  assert.ok(expoTokenPaths.includes('apps/expo/src.ts'))
+  assert.equal(expoTokenPaths.includes('apps/web/src/decoy-rn.ts'), false)
 })

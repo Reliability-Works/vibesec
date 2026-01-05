@@ -22,5 +22,751 @@
       "pattern": "\\bhost\\s*:\\s*['\"]0\\.0\\.0\\.0['\"]",
       "message": "Vite server host appears to be set to 0.0.0.0."
     }
+  },
+  {
+    "id": "sveltekit/open-redirect-searchparams",
+    "severity": "high",
+    "title": "Open redirect via searchParams",
+    "description": "Redirecting to user-controlled URLs can enable phishing and token leakage.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "redirect\\s*\\([^\\)]*(url\\.)?searchParams\\.get\\(\\s*['\"]next['\"]",
+      "message": "Redirect appears to use a user-controlled next parameter."
+    }
+  },
+  {
+    "id": "sveltekit/open-redirect-throw",
+    "severity": "high",
+    "title": "throw redirect with user input",
+    "description": "Throwing redirects to user-controlled destinations can enable open redirects.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "throw\\s+redirect\\s*\\([^\\)]*searchParams\\.get",
+      "message": "throw redirect appears to use searchParams.get."
+    }
+  },
+  {
+    "id": "sveltekit/redirect-301",
+    "severity": "low",
+    "title": "Redirect uses 301",
+    "description": "Permanent redirects can cache unsafe destinations; ensure redirect targets are safe.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "redirect\\s*\\(\\s*301\\s*,",
+      "message": "Redirect uses status 301."
+    }
+  },
+  {
+    "id": "sveltekit/redirect-302",
+    "severity": "low",
+    "title": "Redirect uses 302",
+    "description": "Temporary redirects can still be abused if the destination is user-controlled.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "redirect\\s*\\(\\s*302\\s*,",
+      "message": "Redirect uses status 302."
+    }
+  },
+  {
+    "id": "sveltekit/cookies-secure-false",
+    "severity": "high",
+    "title": "Cookie set with secure: false",
+    "description": "Cookies without secure may be sent over HTTP and can be intercepted.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "cookies\\.set\\([^\\)]*\\{[^}]*\\bsecure\\s*:\\s*false",
+      "flags": "s",
+      "message": "cookies.set appears to set secure: false."
+    }
+  },
+  {
+    "id": "sveltekit/cookies-httponly-false",
+    "severity": "high",
+    "title": "Cookie set with httpOnly: false",
+    "description": "Cookies without httpOnly can be accessed by JavaScript and stolen via XSS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "cookies\\.set\\([^\\)]*\\{[^}]*\\bhttpOnly\\s*:\\s*false",
+      "flags": "s",
+      "message": "cookies.set appears to set httpOnly: false."
+    }
+  },
+  {
+    "id": "sveltekit/cookies-samesite-none",
+    "severity": "medium",
+    "title": "Cookie SameSite set to none",
+    "description": "SameSite=none can enable cross-site cookie sending; ensure CSRF protections and secure cookies.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "sameSite\\s*:\\s*['\"]none['\"]",
+      "message": "sameSite appears to be set to 'none'."
+    }
+  },
+  {
+    "id": "sveltekit/cookies-domain-dot",
+    "severity": "medium",
+    "title": "Cookie domain set to dot-prefixed domain",
+    "description": "Setting cookie domain broadly can increase exposure across subdomains.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "domain\\s*:\\s*['\"]\\.[^'\"]+['\"]",
+      "message": "Cookie domain appears to be set for all subdomains."
+    }
+  },
+  {
+    "id": "sveltekit/cookies-path-root",
+    "severity": "low",
+    "title": "Cookie path set to '/'",
+    "description": "Cookies scoped to '/' are sent to all paths; consider narrowing scope when possible.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bpath\\s*:\\s*['\"]/['\"]",
+      "message": "Cookie path appears to be set to '/'."
+    }
+  },
+  {
+    "id": "sveltekit/cookies-set-without-options",
+    "severity": "medium",
+    "title": "cookies.set without options",
+    "description": "Setting cookies without explicit security options can lead to insecure defaults.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "cookies\\.set\\s*\\(\\s*['\"][^'\"]+['\"]\\s*,\\s*[^,\\)]+\\s*\\)",
+      "message": "cookies.set called without an options object."
+    }
+  },
+  {
+    "id": "sveltekit/csp-unsafe-inline",
+    "severity": "high",
+    "title": "CSP allows unsafe-inline",
+    "description": "CSP with unsafe-inline weakens script protections and increases XSS risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "Content-Security-Policy[^\\n\\r]*unsafe-inline",
+      "message": "Content-Security-Policy includes unsafe-inline."
+    }
+  },
+  {
+    "id": "sveltekit/csp-unsafe-eval",
+    "severity": "high",
+    "title": "CSP allows unsafe-eval",
+    "description": "CSP with unsafe-eval weakens script protections and increases XSS risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "Content-Security-Policy[^\\n\\r]*unsafe-eval",
+      "message": "Content-Security-Policy includes unsafe-eval."
+    }
+  },
+  {
+    "id": "sveltekit/header-x-powered-by",
+    "severity": "low",
+    "title": "X-Powered-By header referenced",
+    "description": "X-Powered-By can reveal implementation details.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "X-Powered-By",
+      "message": "X-Powered-By header referenced."
+    }
+  },
+  {
+    "id": "sveltekit/http-url",
+    "severity": "medium",
+    "title": "Plain HTTP URL",
+    "description": "Using HTTP can expose data to interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "['\"]http://",
+      "message": "Plain http:// URL detected."
+    }
+  },
+  {
+    "id": "sveltekit/tls-reject-unauthorized-zero",
+    "severity": "high",
+    "title": "TLS verification disabled",
+    "description": "Setting NODE_TLS_REJECT_UNAUTHORIZED=0 disables TLS verification and enables MITM attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "NODE_TLS_REJECT_UNAUTHORIZED[^=]{0,20}=\\s*['\"]0['\"]",
+      "message": "NODE_TLS_REJECT_UNAUTHORIZED is set to 0."
+    }
+  },
+  {
+    "id": "sveltekit/reject-unauthorized-false",
+    "severity": "high",
+    "title": "rejectUnauthorized set to false",
+    "description": "Setting rejectUnauthorized: false disables TLS certificate verification.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "rejectUnauthorized\\s*:\\s*false",
+      "message": "rejectUnauthorized appears to be false."
+    }
+  },
+  {
+    "id": "sveltekit/ssrf-localhost",
+    "severity": "high",
+    "title": "Potential SSRF to localhost",
+    "description": "Requesting localhost can enable SSRF attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "http://(localhost|127\\.0\\.0\\.1)",
+      "message": "Potential SSRF target (localhost) detected."
+    }
+  },
+  {
+    "id": "sveltekit/ssrf-metadata",
+    "severity": "high",
+    "title": "Potential SSRF to cloud metadata",
+    "description": "Requesting 169.254.169.254 can expose cloud instance metadata.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "169\\.254\\.169\\.254",
+      "message": "Potential SSRF target (metadata IP) detected."
+    }
+  },
+  {
+    "id": "sveltekit/fetch-user-url-param",
+    "severity": "high",
+    "title": "fetch to URL from user input",
+    "description": "Fetching user-controlled URLs can enable SSRF.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "fetch\\s*\\(\\s*url\\.searchParams\\.get\\(\\s*['\"]url['\"]",
+      "message": "fetch appears to use url.searchParams.get('url')."
+    }
+  },
+  {
+    "id": "sveltekit/path-join-user-input",
+    "severity": "high",
+    "title": "path.join with user input",
+    "description": "Joining paths with user-controlled input can enable path traversal.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "path\\.join\\s*\\([^\\)]*(searchParams\\.get|req\\.|userInput)",
+      "message": "path.join appears to use dynamic input."
+    }
+  },
+  {
+    "id": "sveltekit/fs-readfile-user-input",
+    "severity": "high",
+    "title": "fs.readFile with user input",
+    "description": "Reading files using user-controlled paths can enable file disclosure.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "readFile(Sync)?\\s*\\([^\\)]*(searchParams\\.get|req\\.|userInput)",
+      "message": "readFile appears to use dynamic input."
+    }
+  },
+  {
+    "id": "sveltekit/fs-writefile-user-input",
+    "severity": "high",
+    "title": "fs.writeFile with user input",
+    "description": "Writing files using user-controlled paths can enable overwrites.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "writeFile(Sync)?\\s*\\([^\\)]*(searchParams\\.get|req\\.|userInput)",
+      "message": "writeFile appears to use dynamic input."
+    }
+  },
+  {
+    "id": "sveltekit/eval",
+    "severity": "high",
+    "title": "eval usage",
+    "description": "eval can enable code injection vulnerabilities and is strongly discouraged.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\beval\\s*\\(",
+      "message": "eval detected; avoid dynamic code execution."
+    }
+  },
+  {
+    "id": "sveltekit/new-function",
+    "severity": "high",
+    "title": "Function constructor usage",
+    "description": "new Function can enable code injection vulnerabilities and is strongly discouraged.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bnew\\s+Function\\s*\\(",
+      "message": "new Function detected; avoid dynamic code execution."
+    }
+  },
+  {
+    "id": "sveltekit/child-process-exec",
+    "severity": "high",
+    "title": "child_process exec usage",
+    "description": "Executing shell commands can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bexec\\s*\\(",
+      "message": "exec detected; ensure inputs are not user-controlled."
+    }
+  },
+  {
+    "id": "sveltekit/child-process-execsync",
+    "severity": "high",
+    "title": "child_process execSync usage",
+    "description": "Executing shell commands can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bexecSync\\s*\\(",
+      "message": "execSync detected; ensure inputs are not user-controlled."
+    }
+  },
+  {
+    "id": "sveltekit/child-process-spawn",
+    "severity": "high",
+    "title": "child_process spawn usage",
+    "description": "Spawning subprocesses can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bspawn\\s*\\(",
+      "message": "spawn detected; ensure inputs are not user-controlled."
+    }
+  },
+  {
+    "id": "sveltekit/child-process-spawnsync",
+    "severity": "high",
+    "title": "child_process spawnSync usage",
+    "description": "Spawning subprocesses can lead to command injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bspawnSync\\s*\\(",
+      "message": "spawnSync detected; ensure inputs are not user-controlled."
+    }
+  },
+  {
+    "id": "sveltekit/child-process-fork",
+    "severity": "medium",
+    "title": "child_process fork usage",
+    "description": "Forking subprocesses can increase attack surface; ensure the child module path is safe.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bfork\\s*\\(",
+      "message": "fork detected; ensure the child module path is safe."
+    }
+  },
+  {
+    "id": "sveltekit/crypto-md5",
+    "severity": "medium",
+    "title": "MD5 hashing",
+    "description": "MD5 is considered cryptographically broken and unsuitable for security-sensitive use.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "createHash\\s*\\(\\s*['\"]md5['\"]",
+      "message": "MD5 hashing detected; avoid for security-sensitive use."
+    }
+  },
+  {
+    "id": "sveltekit/crypto-sha1",
+    "severity": "low",
+    "title": "SHA-1 hashing",
+    "description": "SHA-1 is considered weak for collision resistance and should be avoided for new security-sensitive uses.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "createHash\\s*\\(\\s*['\"]sha1['\"]",
+      "message": "SHA-1 hashing detected; avoid for security-sensitive use."
+    }
+  },
+  {
+    "id": "sveltekit/math-random",
+    "severity": "medium",
+    "title": "Math.random usage",
+    "description": "Math.random is not cryptographically secure and should not be used for secrets or tokens.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "Math\\.random\\s*\\(",
+      "message": "Math.random detected; avoid for security-sensitive use."
+    }
+  },
+  {
+    "id": "sveltekit/cookie-parser-secret-hardcoded",
+    "severity": "high",
+    "title": "Hardcoded cookie-parser secret",
+    "description": "Hardcoding secrets in source code increases risk of compromise.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "cookieParser\\s*\\(\\s*['\"][^'\"]{8,}['\"]",
+      "message": "cookieParser appears to use a hardcoded secret."
+    }
+  },
+  {
+    "id": "sveltekit/jwt-secret-hardcoded",
+    "severity": "high",
+    "title": "Hardcoded JWT secret",
+    "description": "Hardcoding JWT secrets increases risk of token forgery.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "jwt\\.(sign|verify)\\s*\\([^\\)]*,\\s*['\"][^'\"]{8,}['\"]",
+      "message": "JWT signing/verifying appears to use a hardcoded secret."
+    }
+  },
+  {
+    "id": "sveltekit/jwt-alg-none",
+    "severity": "high",
+    "title": "JWT algorithm set to none",
+    "description": "alg=none disables signature verification.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\balgorithms?\\s*:\\s*\\[[^\\]]*['\"]none['\"]",
+      "message": "JWT algorithms appears to include 'none'."
+    }
+  },
+  {
+    "id": "sveltekit/insecure-session-secret",
+    "severity": "high",
+    "title": "Hardcoded session secret",
+    "description": "Hardcoded session secrets increase risk of session forgery.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "SESSION_SECRET\\s*=\\s*['\"][^'\"]{8,}['\"]",
+      "message": "Hardcoded session secret detected."
+    }
+  },
+  {
+    "id": "sveltekit/bcrypt-low-rounds",
+    "severity": "medium",
+    "title": "bcrypt salt rounds too low",
+    "description": "Low bcrypt rounds reduce password hashing strength.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "bcrypt\\.(hash|hashSync)\\s*\\([^\\)]*,\\s*([0-9]|1[0-1])\\b",
+      "message": "bcrypt rounds appear low."
+    }
+  },
+  {
+    "id": "sveltekit/password-compare-timing",
+    "severity": "medium",
+    "title": "Insecure string comparison for secrets",
+    "description": "Using === to compare secrets can introduce timing attacks in some contexts.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\b(password|secret|token)\\b[^\\n\\r]{0,40}===",
+      "message": "Potential secret comparison using ===."
+    }
+  },
+  {
+    "id": "sveltekit/sql-string-concat",
+    "severity": "high",
+    "title": "Potential SQL string concatenation",
+    "description": "Building SQL queries via string concatenation can lead to injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "SELECT\\s+[^;]*\\+\\s*(req\\.|userInput)",
+      "message": "SQL string concatenation detected."
+    }
+  },
+  {
+    "id": "sveltekit/sql-template-interpolation",
+    "severity": "high",
+    "title": "SQL template literal interpolation",
+    "description": "Using user-controlled input in SQL template literals can enable injection vulnerabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "SELECT[^`]*\\$\\{\\s*(req\\.|userInput)",
+      "message": "SQL template interpolation detected."
+    }
+  },
+  {
+    "id": "sveltekit/mongodb-where",
+    "severity": "high",
+    "title": "MongoDB $where usage",
+    "description": "$where executes JavaScript on the server and can enable injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\$where\\b",
+      "message": "$where usage detected."
+    }
+  },
+  {
+    "id": "sveltekit/regex-from-user-input",
+    "severity": "medium",
+    "title": "RegExp constructed from dynamic input",
+    "description": "Constructing regular expressions from untrusted input can lead to ReDoS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "new\\s+RegExp\\s*\\([^\\)]*(url\\.searchParams\\.get|searchParams\\.get|req\\.query|userInput)",
+      "message": "new RegExp appears to use dynamic input."
+    }
+  },
+  {
+    "id": "sveltekit/xss-raw-html",
+    "severity": "high",
+    "title": "Raw HTML rendering",
+    "description": "Rendering raw HTML can introduce XSS if the content is untrusted.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\{@html",
+      "message": "Svelte raw HTML directive ({@html}) detected."
+    }
+  },
+  {
+    "id": "sveltekit/response-html-content-type",
+    "severity": "medium",
+    "title": "HTML response content type",
+    "description": "Serving HTML from server code requires careful escaping of user-controlled data.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "text/html",
+      "message": "text/html referenced; ensure untrusted content is escaped."
+    }
+  },
+  {
+    "id": "sveltekit/template-interpolation-user-input",
+    "severity": "high",
+    "title": "User input interpolated into template string",
+    "description": "Interpolating user-controlled input into strings can cause XSS or injection depending on usage.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\$\\{\\s*url\\.searchParams\\.get\\(",
+      "message": "Template string interpolation of url.searchParams.get detected."
+    }
+  },
+  {
+    "id": "sveltekit/cors-allow-origin-star",
+    "severity": "medium",
+    "title": "CORS allows any origin",
+    "description": "Access-Control-Allow-Origin: * can be dangerous for authenticated endpoints.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "Access-Control-Allow-Origin[^\\n\\r]*\\*",
+      "message": "Access-Control-Allow-Origin appears to allow '*'."
+    }
+  },
+  {
+    "id": "sveltekit/cors-allow-headers-star",
+    "severity": "medium",
+    "title": "CORS allows any request headers",
+    "description": "Allowing any headers in CORS responses can broaden attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "Access-Control-Allow-Headers[^\\n\\r]*\\*",
+      "message": "Access-Control-Allow-Headers appears to be '*'."
+    }
+  },
+  {
+    "id": "sveltekit/cors-allow-methods-star",
+    "severity": "medium",
+    "title": "CORS allows any methods",
+    "description": "Allowing any methods in CORS responses can broaden attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "Access-Control-Allow-Methods[^\\n\\r]*\\*",
+      "message": "Access-Control-Allow-Methods appears to be '*'."
+    }
+  },
+  {
+    "id": "sveltekit/cors-credentials-true",
+    "severity": "high",
+    "title": "CORS credentials enabled",
+    "description": "credentials: true can be risky when combined with permissive origins.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bcredentials\\s*:\\s*true",
+      "message": "CORS credentials appears enabled."
+    }
+  },
+  {
+    "id": "sveltekit/debug-enabled",
+    "severity": "medium",
+    "title": "Debug enabled",
+    "description": "Debug mode can leak sensitive information.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "\\bdebug\\s*:\\s*true",
+      "message": "debug appears to be enabled."
+    }
+  },
+  {
+    "id": "sveltekit/console-log-env",
+    "severity": "medium",
+    "title": "Logging environment variables",
+    "description": "Logging process.env can leak secrets into logs.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "console\\.log\\([^\\)]*process\\.env",
+      "message": "process.env appears to be logged."
+    }
+  },
+  {
+    "id": "sveltekit/log-authorization-header",
+    "severity": "high",
+    "title": "Authorization header logged",
+    "description": "Logging Authorization headers can leak tokens.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "authorization\\b[^\\n\\r]{0,80}console\\.log",
+      "message": "Authorization appears to be logged."
+    }
+  },
+  {
+    "id": "sveltekit/log-request-body",
+    "severity": "high",
+    "title": "Request body logged",
+    "description": "Logging request bodies can leak secrets and PII.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "console\\.log\\([^\\)]*(await\\s+)?request\\.(json|text|formData)\\(",
+      "message": "Request body appears to be logged."
+    }
+  },
+  {
+    "id": "sveltekit/request-headers-logged",
+    "severity": "medium",
+    "title": "Request headers logged",
+    "description": "Logging headers can leak credentials and PII.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "console\\.log\\([^\\)]*request\\.headers",
+      "message": "request.headers appears to be logged."
+    }
+  },
+  {
+    "id": "sveltekit/json-parse-request-body",
+    "severity": "medium",
+    "title": "JSON.parse on request body",
+    "description": "Blindly parsing request bodies can be risky; ensure schema validation and size limits.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "JSON\\.parse\\s*\\([^\\)]*request\\.text\\(\\)",
+      "message": "JSON.parse(request.text()) detected; ensure validation and limits."
+    }
+  },
+  {
+    "id": "sveltekit/xml-parser",
+    "severity": "medium",
+    "title": "XML parsing",
+    "description": "Parsing XML can be risky without secure parser configuration.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "xml2js|fast-xml-parser|libxml",
+      "message": "XML parser referenced."
+    }
+  },
+  {
+    "id": "sveltekit/graphql-playground-enabled",
+    "severity": "medium",
+    "title": "GraphQL playground enabled",
+    "description": "Exposing GraphQL playground in production can leak schema information.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "graphql-playground|ApolloServer\\([^\\)]*introspection\\s*:\\s*true",
+      "message": "GraphQL playground or introspection appears enabled."
+    }
+  },
+  {
+    "id": "sveltekit/rate-limit-usage",
+    "severity": "low",
+    "title": "Rate limiting referenced",
+    "description": "Ensure rate limiting is applied to sensitive routes.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "rateLimit\\s*\\(",
+      "message": "rateLimit usage detected."
+    }
+  },
+  {
+    "id": "sveltekit/csrf-disabled",
+    "severity": "high",
+    "title": "CSRF protection disabled",
+    "description": "Disabling CSRF protections can enable cross-site request forgery.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "csrf\\s*:\\s*false",
+      "message": "CSRF appears disabled."
+    }
+  },
+  {
+    "id": "sveltekit/file-upload-any",
+    "severity": "medium",
+    "title": "File upload any() usage",
+    "description": "Accepting any files without validation can enable abuse.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "upload\\.any\\s*\\(",
+      "message": "upload.any() usage detected."
+    }
+  },
+  {
+    "id": "sveltekit/file-upload-temp-dir",
+    "severity": "low",
+    "title": "File uploads stored in /tmp",
+    "description": "Storing uploads in /tmp can be risky depending on host constraints; ensure cleanup and permissions.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "['\"]/tmp/",
+      "message": "Reference to /tmp detected."
+    }
+  },
+  {
+    "id": "sveltekit/location-header-user-input",
+    "severity": "high",
+    "title": "Location header from user input",
+    "description": "Setting Location header from user input can enable redirects and header injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,ts}"],
+      "pattern": "Location['\"]?\\s*:\\s*url\\.searchParams\\.get",
+      "message": "Location header appears to be set from url.searchParams.get."
+    }
   }
 ]

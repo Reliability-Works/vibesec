@@ -2,6 +2,39 @@
 
 Local-first security scanner for modern app frameworks.
 
+## Installation
+
+### Global installation (recommended)
+
+```bash
+npm install -g @reliabilityworks/vibesec
+```
+
+This installs the `vibesec` CLI so you can run:
+
+```bash
+vibesec scan .
+```
+
+### Optional: build from source
+
+For development or contributing:
+
+```bash
+git clone https://github.com/Reliability-Works/vibesec.git
+cd vibesec
+pnpm install
+pnpm build
+cd packages/cli
+npm link
+```
+
+Then run from anywhere:
+
+```bash
+vibesec scan .
+```
+
 ## Dev
 
 - Install: `pnpm install`

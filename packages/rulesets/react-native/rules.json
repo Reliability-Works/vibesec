@@ -12,27 +12,771 @@
     }
   },
   {
+    "id": "rn/android-debuggable",
+    "severity": "high",
+    "title": "Android app is debuggable",
+    "description": "Shipping with android:debuggable=\"true\" can enable runtime inspection and tampering.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:debuggable\\s*=\\s*\\\"true\\\"",
+      "message": "android:debuggable=\"true\" detected"
+    }
+  },
+  {
+    "id": "rn/android-allow-backup",
+    "severity": "medium",
+    "title": "Android backups allowed",
+    "description": "android:allowBackup can allow app data to be included in backups and restored to other devices.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:allowBackup\\s*=\\s*\\\"true\\\"",
+      "message": "android:allowBackup=\"true\" detected"
+    }
+  },
+  {
+    "id": "rn/android-network-security-config",
+    "severity": "low",
+    "title": "Android network security config referenced",
+    "description": "Review network security config for cleartext exceptions and trust anchors.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:networkSecurityConfig\\s*=\\s*\\\"@xml/",
+      "message": "android:networkSecurityConfig referenced"
+    }
+  },
+  {
+    "id": "rn/android-request-legacy-external-storage",
+    "severity": "medium",
+    "title": "Legacy external storage requested",
+    "description": "requestLegacyExternalStorage can broaden file access on Android 10 and may increase data exposure.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:requestLegacyExternalStorage\\s*=\\s*\\\"true\\\"",
+      "message": "android:requestLegacyExternalStorage=\"true\" detected"
+    }
+  },
+  {
+    "id": "rn/android-exported-activity",
+    "severity": "medium",
+    "title": "Exported Android activity",
+    "description": "Exported activities can be invoked by other apps. Validate intents and protect sensitive entrypoints.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "<activity[^>]*android:exported\\s*=\\s*\\\"true\\\"",
+      "message": "Exported activity detected"
+    }
+  },
+  {
+    "id": "rn/android-exported-receiver",
+    "severity": "high",
+    "title": "Exported Android broadcast receiver",
+    "description": "Exported receivers can be triggered by other apps. Ensure permissions/signature protections are correct.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "<receiver[^>]*android:exported\\s*=\\s*\\\"true\\\"",
+      "message": "Exported receiver detected"
+    }
+  },
+  {
+    "id": "rn/android-exported-service",
+    "severity": "high",
+    "title": "Exported Android service",
+    "description": "Exported services can be started/bound by other apps. Ensure services are protected appropriately.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "<service[^>]*android:exported\\s*=\\s*\\\"true\\\"",
+      "message": "Exported service detected"
+    }
+  },
+  {
+    "id": "rn/android-permission-camera",
+    "severity": "low",
+    "title": "Android CAMERA permission requested",
+    "description": "Requesting camera access increases privacy risk; ensure it is necessary and well scoped.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.CAMERA\\\"",
+      "message": "CAMERA permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-record-audio",
+    "severity": "low",
+    "title": "Android RECORD_AUDIO permission requested",
+    "description": "Requesting microphone access increases privacy risk; ensure it is necessary and well scoped.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.RECORD_AUDIO\\\"",
+      "message": "RECORD_AUDIO permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-read-sms",
+    "severity": "high",
+    "title": "Android READ_SMS permission requested",
+    "description": "SMS access is highly sensitive; avoid requesting READ_SMS unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.READ_SMS\\\"",
+      "message": "READ_SMS permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-send-sms",
+    "severity": "high",
+    "title": "Android SEND_SMS permission requested",
+    "description": "SMS sending can be abused for fraud; avoid requesting SEND_SMS unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.SEND_SMS\\\"",
+      "message": "SEND_SMS permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-read-contacts",
+    "severity": "medium",
+    "title": "Android READ_CONTACTS permission requested",
+    "description": "Contacts access is sensitive; ensure collection is necessary and minimized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.READ_CONTACTS\\\"",
+      "message": "READ_CONTACTS permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-write-contacts",
+    "severity": "medium",
+    "title": "Android WRITE_CONTACTS permission requested",
+    "description": "Writing contacts is sensitive; ensure it is necessary and properly disclosed.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.WRITE_CONTACTS\\\"",
+      "message": "WRITE_CONTACTS permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-access-fine-location",
+    "severity": "medium",
+    "title": "Android ACCESS_FINE_LOCATION permission requested",
+    "description": "Fine location is sensitive. Ensure collection is necessary and minimized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.ACCESS_FINE_LOCATION\\\"",
+      "message": "ACCESS_FINE_LOCATION permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-access-background-location",
+    "severity": "high",
+    "title": "Android ACCESS_BACKGROUND_LOCATION permission requested",
+    "description": "Background location is highly sensitive; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.ACCESS_BACKGROUND_LOCATION\\\"",
+      "message": "ACCESS_BACKGROUND_LOCATION permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-read-phone-state",
+    "severity": "medium",
+    "title": "Android READ_PHONE_STATE permission requested",
+    "description": "Phone state access can be sensitive; ensure it is necessary and minimized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.READ_PHONE_STATE\\\"",
+      "message": "READ_PHONE_STATE permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-read-call-log",
+    "severity": "high",
+    "title": "Android READ_CALL_LOG permission requested",
+    "description": "Call logs are highly sensitive; avoid requesting READ_CALL_LOG unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.READ_CALL_LOG\\\"",
+      "message": "READ_CALL_LOG permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-write-call-log",
+    "severity": "high",
+    "title": "Android WRITE_CALL_LOG permission requested",
+    "description": "Writing call logs is highly sensitive; avoid requesting WRITE_CALL_LOG unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.WRITE_CALL_LOG\\\"",
+      "message": "WRITE_CALL_LOG permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-manage-external-storage",
+    "severity": "high",
+    "title": "Android MANAGE_EXTERNAL_STORAGE permission requested",
+    "description": "All files access is highly sensitive and broad; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.MANAGE_EXTERNAL_STORAGE\\\"",
+      "message": "MANAGE_EXTERNAL_STORAGE permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-system-alert-window",
+    "severity": "high",
+    "title": "Android SYSTEM_ALERT_WINDOW permission requested",
+    "description": "Overlay permission can enable phishing and UI redress attacks; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.SYSTEM_ALERT_WINDOW\\\"",
+      "message": "SYSTEM_ALERT_WINDOW permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-request-install-packages",
+    "severity": "high",
+    "title": "Android REQUEST_INSTALL_PACKAGES permission requested",
+    "description": "Allowing package installs can enable sideloading and abuse; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.REQUEST_INSTALL_PACKAGES\\\"",
+      "message": "REQUEST_INSTALL_PACKAGES permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-package-usage-stats",
+    "severity": "high",
+    "title": "Android PACKAGE_USAGE_STATS permission requested",
+    "description": "Usage stats can reveal sensitive user behavior; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.PACKAGE_USAGE_STATS\\\"",
+      "message": "PACKAGE_USAGE_STATS permission requested"
+    }
+  },
+  {
+    "id": "rn/android-permission-bind-accessibility-service",
+    "severity": "high",
+    "title": "Android BIND_ACCESSIBILITY_SERVICE permission referenced",
+    "description": "Accessibility services can capture sensitive data; ensure appropriate justification and protections.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "android:name\\s*=\\s*\\\"android\\.permission\\.BIND_ACCESSIBILITY_SERVICE\\\"",
+      "message": "BIND_ACCESSIBILITY_SERVICE permission referenced"
+    }
+  },
+  {
     "id": "rn/ats-arbitrary-loads",
     "severity": "high",
-    "title": "ATS allows arbitrary loads on iOS",
-    "description": "Disabling App Transport Security can allow insecure HTTP traffic.",
+    "title": "ATS allows arbitrary loads",
+    "description": "NSAllowsArbitraryLoads disables ATS protections and can permit insecure HTTP connections.",
     "matcher": {
       "type": "regex",
       "fileGlobs": ["**/Info.plist"],
-      "pattern": "NSAllowsArbitraryLoads[\\s\\S]*<true\\s*/>",
-      "message": "NSAllowsArbitraryLoads appears enabled"
+      "pattern": "NSAllowsArbitraryLoads</key>\\s*<true\\s*/>",
+      "message": "NSAllowsArbitraryLoads enabled"
+    }
+  },
+  {
+    "id": "rn/ios-ats-arbitrary-loads-in-webcontent",
+    "severity": "high",
+    "title": "ATS allows arbitrary loads in web content",
+    "description": "NSAllowsArbitraryLoadsInWebContent permits insecure loads inside WKWebView / embedded web content.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "NSAllowsArbitraryLoadsInWebContent</key>\\s*<true\\s*/>",
+      "message": "NSAllowsArbitraryLoadsInWebContent enabled"
+    }
+  },
+  {
+    "id": "rn/ios-ats-arbitrary-loads-for-media",
+    "severity": "medium",
+    "title": "ATS allows arbitrary loads for media",
+    "description": "NSAllowsArbitraryLoadsForMedia allows insecure media loads; review necessity.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "NSAllowsArbitraryLoadsForMedia</key>\\s*<true\\s*/>",
+      "message": "NSAllowsArbitraryLoadsForMedia enabled"
+    }
+  },
+  {
+    "id": "rn/ios-ats-arbitrary-loads-for-webcontent",
+    "severity": "medium",
+    "title": "ATS allows arbitrary loads for web content",
+    "description": "NSAllowsArbitraryLoadsForWebContent allows insecure web loads; review necessity.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "NSAllowsArbitraryLoadsForWebContent</key>\\s*<true\\s*/>",
+      "message": "NSAllowsArbitraryLoadsForWebContent enabled"
+    }
+  },
+  {
+    "id": "rn/ios-ats-exception-insecure-http-loads",
+    "severity": "high",
+    "title": "ATS exception allows insecure HTTP loads",
+    "description": "NSExceptionAllowsInsecureHTTPLoads allows non-TLS traffic for exception domains.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "NSExceptionAllowsInsecureHTTPLoads</key>\\s*<true\\s*/>",
+      "message": "NSExceptionAllowsInsecureHTTPLoads enabled"
+    }
+  },
+  {
+    "id": "rn/ios-ats-exception-minimum-tls-1-0",
+    "severity": "high",
+    "title": "ATS exception allows TLSv1.0",
+    "description": "Allowing TLSv1.0 weakens transport security; prefer TLS 1.2+.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "NSExceptionMinimumTLSVersion</key>\\s*<string>TLSv1\\.0</string>",
+      "message": "NSExceptionMinimumTLSVersion set to TLSv1.0"
+    }
+  },
+  {
+    "id": "rn/ios-ats-allows-local-networking",
+    "severity": "low",
+    "title": "ATS allows local networking",
+    "description": "Allowing local networking may be intended, but review for exposure to untrusted networks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "NSAllowsLocalNetworking</key>\\s*<true\\s*/>",
+      "message": "NSAllowsLocalNetworking enabled"
+    }
+  },
+  {
+    "id": "rn/ios-ui-filesharing-enabled",
+    "severity": "medium",
+    "title": "iOS UIFileSharingEnabled enabled",
+    "description": "Enabling iTunes File Sharing can expose app documents to users and desktop access.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "UIFileSharingEnabled</key>\\s*<true\\s*/>",
+      "message": "UIFileSharingEnabled enabled"
+    }
+  },
+  {
+    "id": "rn/ios-documents-in-place",
+    "severity": "low",
+    "title": "iOS supports opening documents in place",
+    "description": "Opening documents in place can interact with external providers; review implications for sensitive files.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "LSSupportsOpeningDocumentsInPlace</key>\\s*<true\\s*/>",
+      "message": "LSSupportsOpeningDocumentsInPlace enabled"
+    }
+  },
+  {
+    "id": "rn/insecure-universal-links",
+    "severity": "low",
+    "title": "Associated domains configured",
+    "description": "Ensure associated domains are correct and validated to prevent deep link hijacking.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.entitlements"],
+      "pattern": "com\\.apple\\.developer\\.associated-domains",
+      "message": "Associated domains entitlement referenced"
+    }
+  },
+  {
+    "id": "rn/ios-get-task-allow-enabled",
+    "severity": "high",
+    "title": "iOS get-task-allow enabled",
+    "description": "get-task-allow enables debugging/attaching; ensure it is disabled for production builds.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.entitlements"],
+      "pattern": "get-task-allow</key>\\s*<true\\s*/>",
+      "message": "get-task-allow is enabled"
+    }
+  },
+  {
+    "id": "rn/ios-keychain-access-groups",
+    "severity": "medium",
+    "title": "iOS keychain access groups configured",
+    "description": "Review keychain access groups for unnecessary sharing between apps/extensions.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.entitlements"],
+      "pattern": "keychain-access-groups",
+      "message": "keychain-access-groups referenced"
+    }
+  },
+  {
+    "id": "rn/insecure-biometrics-fallback",
+    "severity": "low",
+    "title": "Biometrics fallback allowed",
+    "description": "Allowing biometrics fallback to device passcode may be acceptable, but ensure security requirements are met.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "allowDeviceCredentials\\s*:\\s*true",
+      "message": "allowDeviceCredentials: true detected"
+    }
+  },
+  {
+    "id": "rn/unsafe-webview-file-url",
+    "severity": "high",
+    "title": "WebView loads file:// URL",
+    "description": "Loading local file URLs in a WebView can increase risk of file access and injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "file://",
+      "message": "file:// URL referenced"
+    }
+  },
+  {
+    "id": "rn/insecure-allowlist-missing",
+    "severity": "low",
+    "title": "No explicit allowlist",
+    "description": "Allowlisting origins and inputs can reduce attack surface.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\ballowlist\\b",
+      "message": "allowlist referenced"
+    }
+  },
+  {
+    "id": "rn/insecure-debug-flag",
+    "severity": "low",
+    "title": "Debug flag referenced",
+    "description": "Ensure debug features are disabled in production builds.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "__DEV__|debug\\s*:\\s*true",
+      "message": "Debug flag detected"
+    }
+  },
+  {
+    "id": "rn/insecure-crypto-random-by-math",
+    "severity": "low",
+    "title": "Non-cryptographic random referenced",
+    "description": "Avoid using Math.random for secrets, tokens, or identifiers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Math\\.random\\s*\\(",
+      "message": "Math.random() detected"
+    }
+  },
+  {
+    "id": "rn/insecure-webview-postmessage",
+    "severity": "medium",
+    "title": "WebView postMessage bridge used",
+    "description": "WebView messaging bridges can enable injection if messages are not validated.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "onMessage\\s*=|postMessage\\s*\\(",
+      "message": "WebView messaging bridge detected"
+    }
+  },
+  {
+    "id": "rn/insecure-remote-debugging",
+    "severity": "low",
+    "title": "Remote debugging referenced",
+    "description": "Ensure remote debugging is disabled in production.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "remote debugging|Debug JS Remotely",
+      "message": "Remote debugging referenced"
+    }
+  },
+  {
+    "id": "rn/insecure-pasteboard",
+    "severity": "medium",
+    "title": "Clipboard used for sensitive data",
+    "description": "Clipboard/Pasteboard can be read by other apps; avoid storing secrets there.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Clipboard\\.|Pasteboard",
+      "message": "Clipboard/Pasteboard referenced"
+    }
+  },
+  {
+    "id": "rn/insecure-http-fetch",
+    "severity": "high",
+    "title": "HTTP request via fetch",
+    "description": "Using http:// in network requests can expose traffic to interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "fetch\\s*\\(\\s*['\\\"]http://",
+      "message": "fetch() called with http:// URL"
+    }
+  },
+  {
+    "id": "rn/insecure-http-axios-baseurl",
+    "severity": "high",
+    "title": "HTTP baseURL configured for axios",
+    "description": "Using http:// as a base URL can expose traffic to interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "baseURL\\s*:\\s*['\\\"]http://",
+      "message": "axios baseURL uses http://"
+    }
+  },
+  {
+    "id": "rn/insecure-webview-http-source",
+    "severity": "medium",
+    "title": "WebView loads http:// content",
+    "description": "Loading http:// content in a WebView can enable injection and interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "uri\\s*:\\s*['\\\"]http://",
+      "message": "WebView source uri uses http://"
+    }
+  },
+  {
+    "id": "rn/webview-allows-any-origin",
+    "severity": "high",
+    "title": "WebView allows any origin via originWhitelist",
+    "description": "Allowing any origin can enable navigation to untrusted content.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "originWhitelist\\s*=\\s*\\[\\s*['\\\"]\\*['\\\"]",
+      "message": "originWhitelist includes '*'"
+    }
+  },
+  {
+    "id": "rn/webview-mixed-content-always",
+    "severity": "high",
+    "title": "WebView mixed content allowed",
+    "description": "Allowing mixed content can permit insecure resource loads alongside HTTPS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "mixedContentMode\\s*=\\s*['\\\"]always['\\\"]",
+      "message": "mixedContentMode set to always"
+    }
+  },
+  {
+    "id": "rn/webview-javascript-enabled",
+    "severity": "low",
+    "title": "WebView JavaScript enabled",
+    "description": "JavaScript in WebViews can increase risk when rendering untrusted content.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "javaScriptEnabled\\s*=\\s*(\\{\\s*true\\s*\\}|true)",
+      "message": "javaScriptEnabled enabled"
+    }
+  },
+  {
+    "id": "rn/webview-domstorage-enabled",
+    "severity": "low",
+    "title": "WebView DOM storage enabled",
+    "description": "DOM storage can persist data in web contexts; review exposure for sensitive info.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "domStorageEnabled\\s*=\\s*(\\{\\s*true\\s*\\}|true)",
+      "message": "domStorageEnabled enabled"
+    }
+  },
+  {
+    "id": "rn/webview-injectedjavascript",
+    "severity": "medium",
+    "title": "WebView injectedJavaScript used",
+    "description": "Injecting JavaScript into WebViews can be risky when combined with untrusted content.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "injectedJavaScript\\s*=",
+      "message": "injectedJavaScript prop used"
+    }
+  },
+  {
+    "id": "rn/webview-shared-cookies-enabled",
+    "severity": "low",
+    "title": "WebView shared cookies enabled",
+    "description": "Sharing cookies between WebViews and the native cookie store can increase tracking and leakage risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "sharedCookiesEnabled\\s*=\\s*\\{\\s*true\\s*\\}",
+      "message": "sharedCookiesEnabled enabled"
+    }
+  },
+  {
+    "id": "rn/webview-third-party-cookies-enabled",
+    "severity": "low",
+    "title": "WebView third-party cookies enabled",
+    "description": "Third-party cookies can increase tracking and leakage risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "thirdPartyCookiesEnabled\\s*=\\s*\\{\\s*true\\s*\\}",
+      "message": "thirdPartyCookiesEnabled enabled"
+    }
+  },
+  {
+    "id": "rn/insecure-deeplink-getinitialurl",
+    "severity": "medium",
+    "title": "Deep link URL retrieved",
+    "description": "Deep link URLs should be validated before use to prevent navigation to untrusted destinations.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Linking\\.getInitialURL\\s*\\(",
+      "message": "Linking.getInitialURL() detected"
+    }
+  },
+  {
+    "id": "rn/insecure-deeplink-openurl",
+    "severity": "medium",
+    "title": "Deep link URL opened",
+    "description": "Opening URLs should be restricted/validated to avoid navigation to untrusted destinations.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Linking\\.openURL\\s*\\(",
+      "message": "Linking.openURL() detected"
+    }
+  },
+  {
+    "id": "rn/insecure-deeplink-url-event-listener",
+    "severity": "low",
+    "title": "Deep link URL event listener registered",
+    "description": "When handling URL events, validate scheme/host and reject untrusted inputs.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Linking\\.addEventListener\\s*\\(\\s*['\\\"]url['\\\"]",
+      "message": "Linking url event listener detected"
     }
   },
   {
     "id": "rn/asyncstorage-token-key",
     "severity": "high",
-    "title": "Potential token stored in AsyncStorage",
-    "description": "AsyncStorage is not suitable for storing secrets; prefer platform secure storage for tokens.",
+    "title": "AsyncStorage stores auth token",
+    "description": "Storing authentication tokens in AsyncStorage is not encrypted by default.",
     "matcher": {
       "type": "regex",
       "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
-      "pattern": "AsyncStorage\\.setItem\\(\\s*['\\\"][^'\\\"]*(token|secret|key|password)[^'\\\"]*['\\\"]",
-      "message": "AsyncStorage key name suggests sensitive data storage"
+      "pattern": "AsyncStorage\\.setItem\\s*\\(\\s*['\\\"](auth_)?token['\\\"]",
+      "message": "AsyncStorage.setItem() called with token key"
+    }
+  },
+  {
+    "id": "rn/insecure-storage-asyncstorage-setitem",
+    "severity": "medium",
+    "title": "AsyncStorage used to store data",
+    "description": "AsyncStorage is not encrypted by default; avoid storing secrets or tokens in plaintext.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "AsyncStorage\\.setItem\\s*\\(",
+      "message": "AsyncStorage.setItem() detected"
+    }
+  },
+  {
+    "id": "rn/insecure-storage-asyncstorage-getitem",
+    "severity": "low",
+    "title": "AsyncStorage used to read data",
+    "description": "When reading from AsyncStorage, ensure secrets are not stored unencrypted.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "AsyncStorage\\.getItem\\s*\\(",
+      "message": "AsyncStorage.getItem() detected"
+    }
+  },
+  {
+    "id": "rn/insecure-storage-mmkv",
+    "severity": "low",
+    "title": "MMKV storage referenced",
+    "description": "Ensure sensitive values stored in MMKV are encrypted or otherwise protected.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "new\\s+MMKV\\s*\\(",
+      "message": "MMKV instantiated"
+    }
+  },
+  {
+    "id": "rn/insecure-ios-keychain-accessible-always",
+    "severity": "high",
+    "title": "iOS Keychain accessibleAlways referenced",
+    "description": "kSecAttrAccessibleAlways can allow keychain items to be accessible more broadly than intended.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "kSecAttrAccessibleAlways",
+      "message": "kSecAttrAccessibleAlways referenced"
+    }
+  },
+  {
+    "id": "rn/insecure-logging-secrets",
+    "severity": "medium",
+    "title": "Potential secret logged",
+    "description": "Logging secrets (tokens/passwords) can leak sensitive data to logs and third-party crash reporters.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "console\\.log\\([^\\n]*(token|password|secret)",
+      "message": "console.log with potential secret keyword"
+    }
+  },
+  {
+    "id": "rn/insecure-crypto-md5",
+    "severity": "medium",
+    "title": "Weak hash (MD5) referenced",
+    "description": "MD5 is considered cryptographically broken; avoid using it for security purposes.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "createHash\\s*\\(\\s*['\\\"]md5['\\\"]\\s*\\)|\\bMD5\\b",
+      "message": "MD5 referenced"
+    }
+  },
+  {
+    "id": "rn/insecure-crypto-sha1",
+    "severity": "medium",
+    "title": "Weak hash (SHA1) referenced",
+    "description": "SHA1 is deprecated for many security uses; prefer SHA-256+.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "createHash\\s*\\(\\s*['\\\"]sha1['\\\"]\\s*\\)|\\bSHA1\\b",
+      "message": "SHA1 referenced"
     }
   }
 ]

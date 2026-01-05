@@ -5,6 +5,29 @@
     <dict>
       <key>NSAllowsArbitraryLoads</key>
       <true />
+      <key>NSAllowsArbitraryLoadsInWebContent</key>
+      <true />
+      <key>NSAllowsArbitraryLoadsForMedia</key>
+      <true />
+      <key>NSAllowsArbitraryLoadsForWebContent</key>
+      <true />
+      <key>NSAllowsLocalNetworking</key>
+      <true />
+      <key>NSExceptionDomains</key>
+      <dict>
+        <key>example.com</key>
+        <dict>
+          <key>NSExceptionAllowsInsecureHTTPLoads</key>
+          <true />
+          <key>NSExceptionMinimumTLSVersion</key>
+          <string>TLSv1.0</string>
+        </dict>
+      </dict>
     </dict>
+
+    <key>UIFileSharingEnabled</key>
+    <true />
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true />
   </dict>
 </plist>

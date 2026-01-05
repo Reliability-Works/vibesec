@@ -1,0 +1,38 @@
+export function triggerReactNativeRulesFixture() {
+  const snippets = [
+    'allowDeviceCredentials: true',
+    '__DEV__',
+    'debug: true',
+    "AsyncStorage.setItem('token', 'secret')",
+    "AsyncStorage.getItem('token')",
+    "fetch('http://example.com')",
+    "baseURL: 'http://example.com'",
+    "console.log('token', 'secret')",
+    'file://etc/passwd',
+    "Clipboard.setString('secret')",
+    'Pasteboard',
+    'Linking.getInitialURL()',
+    "Linking.openURL('http://example.com')",
+    "Linking.addEventListener('url', () => {})",
+    'remote debugging',
+    'Debug JS Remotely',
+    'new MMKV()',
+    'kSecAttrAccessibleAlways',
+    'MD5',
+    'SHA1',
+    'Math.random()',
+    "originWhitelist = ['*']",
+    "mixedContentMode = 'always'",
+    'javaScriptEnabled = { true }',
+    'domStorageEnabled = { true }',
+    "injectedJavaScript = '...';",
+    'sharedCookiesEnabled = {true}',
+    'thirdPartyCookiesEnabled = {true}',
+    'onMessage = () => {}',
+    "postMessage('hello')",
+    "uri: 'http://example.com'",
+    'allowlist',
+  ]
+
+  return snippets.join('\n')
+}

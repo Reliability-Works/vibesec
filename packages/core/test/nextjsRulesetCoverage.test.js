@@ -13,6 +13,7 @@ test('nextjs ruleset has fixture coverage', async () => {
   const rules = JSON.parse(raw)
 
   assert.ok(Array.isArray(rules))
+  assert.ok(rules.length >= 60, `Expected at least 60 nextjs rules, got ${rules.length}`)
 
   const expectedIds = rules.map((r) => r.id)
   const result = await scanProject({

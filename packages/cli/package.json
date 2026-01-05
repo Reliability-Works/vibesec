@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@vibesec/core": "workspace:*",
+    "@vibesec/ruleset-nextjs": "workspace:*",
+    "@vibesec/ruleset-react-native": "workspace:*",
     "commander": "^12.0.0"
   }
 }

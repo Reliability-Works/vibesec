@@ -13,6 +13,8 @@ export type FindingLocation = {
 
 export type Finding = {
   ruleId: string
+  ruleTitle: string
+  ruleDescription?: string
   severity: SeverityName
   severityRank: number
   message: string
@@ -21,8 +23,17 @@ export type Finding = {
   excerpt?: string
 }
 
+export type FrameworkId = 'nextjs' | 'react-native' | 'expo'
+
+export type FrameworkDetection = {
+  id: FrameworkId
+  confidence: 'high' | 'medium' | 'low'
+  evidence: string[]
+}
+
 export type ScanResult = {
   rootDir: string
+  frameworks: FrameworkDetection[]
   scannedFiles: number
   ignoredFindings: number
   findings: Finding[]
@@ -32,6 +43,8 @@ export type ScanOptions = {
   rootDir: string
   configPath?: string
   customRulesDir?: string
+  frameworks?: FrameworkDetection[]
+  additionalRules?: Rule[]
   maxFileSizeBytes?: number
 }
 

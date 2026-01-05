@@ -1,0 +1,38 @@
+[
+  {
+    "id": "nextjs/production-browser-sourcemaps",
+    "severity": "medium",
+    "title": "Source maps enabled in production",
+    "description": "Enabling production browser source maps can expose source code and application internals.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/next.config.{js,cjs,mjs,ts}"],
+      "pattern": "productionBrowserSourceMaps\\s*:\\s*true",
+      "message": "productionBrowserSourceMaps appears to be enabled"
+    }
+  },
+  {
+    "id": "nextjs/next-public-secret-name",
+    "severity": "high",
+    "title": "Potential secret exposed via NEXT_PUBLIC_ env",
+    "description": "Environment variables prefixed with NEXT_PUBLIC_ are exposed to the browser. Names containing KEY/SECRET/TOKEN/PASSWORD are often secrets.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\bNEXT_PUBLIC_[A-Z0-9_]*(KEY|SECRET|TOKEN|PASSWORD)\\b",
+      "message": "NEXT_PUBLIC_ variable name suggests a secret may be exposed to the client"
+    }
+  },
+  {
+    "id": "nextjs/unsafe-revalidate-zero",
+    "severity": "medium",
+    "title": "Revalidate set to 0",
+    "description": "Using revalidate: 0 can disable caching and increase load; it can also be an indicator of misconfigured production caching.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\brevalidate\\s*:\\s*0\\b",
+      "message": "revalidate is set to 0"
+    }
+  }
+]

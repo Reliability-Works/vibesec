@@ -125,25 +125,43 @@ const configSchema = z.object({
   ignore: z.array(ignoreEntrySchema).optional(),
 })
 
+function resolveConfigPath(rootDir: string, candidate: string): string {
+  if (!candidate) return candidate
+  return path.isAbsolute(candidate) ? candidate : path.join(rootDir, candidate)
+}
+
+async function loadConfigFromCandidates(candidates: string[]): Promise<VibeSecConfig> {
+  for (const candidate of candidates) {
+    if (!(await fileExists(candidate))) continue
+    const raw = await fs.readFile(candidate, 'utf8')
+    const parsed = YAML.parse(raw)
+    const validated = configSchema.safeParse(parsed)
+    if (!validated.success) {
+      throw new Error(`Invalid config at ${candidate}`)
+    }
+    return validated.data
+  }
+
+  return {}
+}
+
 function loadConfig(configRootDir: string, configPath?: string): Promise<VibeSecConfig> {
   const candidates = configPath
-    ? [configPath]
+    ? [resolveConfigPath(configRootDir, configPath)]
     : [path.join(configRootDir, '.vibesec.yaml'), path.join(configRootDir, '.vibesec.yml')]
 
-  return (async () => {
-    for (const candidate of candidates) {
-      if (!(await fileExists(candidate))) continue
-      const raw = await fs.readFile(candidate, 'utf8')
-      const parsed = YAML.parse(raw)
-      const validated = configSchema.safeParse(parsed)
-      if (!validated.success) {
-        throw new Error(`Invalid config at ${candidate}`)
-      }
-      return validated.data
-    }
+  return loadConfigFromCandidates(candidates)
+}
 
-    return {}
-  })()
+function loadBaseline(configRootDir: string, baselinePath?: string): Promise<VibeSecConfig> {
+  const candidates = baselinePath
+    ? [resolveConfigPath(configRootDir, baselinePath)]
+    : [
+        path.join(configRootDir, '.vibesec.baseline.yaml'),
+        path.join(configRootDir, '.vibesec.baseline.yml'),
+      ]
+
+  return loadConfigFromCandidates(candidates)
 }
 
 const ruleSchema: z.ZodType<Rule> = z.object({
@@ -285,6 +303,11 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
   const maxFileSizeBytes = options.maxFileSizeBytes ?? DEFAULT_MAX_FILE_SIZE_BYTES
 
   const config = await loadConfig(configRootDir, options.configPath)
+  const baseline = await loadBaseline(configRootDir, options.baselinePath)
+  const mergedConfig: VibeSecConfig = {
+    ignore: [...(config.ignore ?? []), ...(baseline.ignore ?? [])],
+  }
+
   const additionalRules = options.additionalRules ?? []
   const rules = [
     ...BUILTIN_RULES,
@@ -314,7 +337,7 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
           message: rule.matcher.message,
         })
 
-        if (isIgnored(config, finding)) {
+        if (isIgnored(mergedConfig, finding)) {
           ignoredFindings += 1
           continue
         }
@@ -358,7 +381,7 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
         lineText,
       })
 
-      if (isIgnored(config, finding)) {
+      if (isIgnored(mergedConfig, finding)) {
         ignoredFindings += 1
         continue
       }

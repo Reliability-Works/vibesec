@@ -1,0 +1,9 @@
+---
+const html = '<img src=x onerror=alert(1) />'
+---
+
+<div set:html={html}></div>
+
+<script is:inline>
+  console.log('inline')
+</script>

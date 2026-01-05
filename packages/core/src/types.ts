@@ -23,7 +23,7 @@ export type Finding = {
   excerpt?: string
 }
 
-export type FrameworkId = 'nextjs' | 'react-native' | 'expo' | 'express' | 'sveltekit'
+export type FrameworkId = 'nextjs' | 'react-native' | 'expo' | 'express' | 'sveltekit' | 'astro'
 
 export type FrameworkDetection = {
   id: FrameworkId
@@ -44,6 +44,7 @@ export type ScanOptions = {
   pathBaseDir?: string
   configRootDir?: string
   configPath?: string
+  baselinePath?: string
   customRulesDir?: string
   frameworks?: FrameworkDetection[]
   additionalRules?: Rule[]

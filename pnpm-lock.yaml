@@ -43,6 +43,9 @@ importers:
       '@reliabilityworks/core':
         specifier: workspace:*
         version: link:../core
+      '@reliabilityworks/ruleset-astro':
+        specifier: workspace:*
+        version: link:../rulesets/astro
       '@reliabilityworks/ruleset-express':
         specifier: workspace:*
         version: link:../rulesets/express
@@ -73,6 +76,8 @@ importers:
       zod:
         specifier: ^3.0.0
         version: 3.25.76
+
+  packages/rulesets/astro: {}
 
   packages/rulesets/express: {}
 

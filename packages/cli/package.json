@@ -17,6 +17,7 @@
     "@reliabilityworks/ruleset-react-native": "workspace:*",
     "@reliabilityworks/ruleset-express": "workspace:*",
     "@reliabilityworks/ruleset-sveltekit": "workspace:*",
+    "@reliabilityworks/ruleset-astro": "workspace:*",
     "commander": "^12.0.0"
   }
 }

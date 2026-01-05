@@ -37,6 +37,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@reliability-works/analyzer-javascript':
+        specifier: workspace:*
+        version: link:../analyzers/javascript
       '@reliability-works/core':
         specifier: workspace:*
         version: link:../core

@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   publish:
@@ -24,6 +25,9 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
           cache: pnpm
+
+      - name: Upgrade npm for trusted publishing
+        run: npm i -g npm@11.5.1
 
       - name: Install
         run: pnpm install --frozen-lockfile
@@ -45,6 +49,9 @@ jobs:
           pnpm -C packages/rulesets/sveltekit exec npm version "$VERSION" --no-git-tag-version --allow-same-version
           pnpm -C packages/cli exec npm version "$VERSION" --no-git-tag-version --allow-same-version
 
+          pnpm -C packages/analyzers/javascript exec npm pkg set "dependencies.@reliability-works/core=$VERSION"
+           pnpm -C packages/cli exec npm pkg set "dependencies.@reliability-works/core=$VERSION" "dependencies.@reliability-works/analyzer-javascript=$VERSION" "dependencies.@reliability-works/ruleset-nextjs=$VERSION" "dependencies.@reliability-works/ruleset-react-native=$VERSION" "dependencies.@reliability-works/ruleset-express=$VERSION" "dependencies.@reliability-works/ruleset-sveltekit=$VERSION"
+
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -57,10 +64,10 @@ jobs:
             DIST_TAG=next
           fi
 
-          npm publish --access public --tag "$DIST_TAG" packages/core
-          npm publish --access public --tag "$DIST_TAG" packages/rulesets/nextjs
-          npm publish --access public --tag "$DIST_TAG" packages/rulesets/react-native
-          npm publish --access public --tag "$DIST_TAG" packages/rulesets/express
-          npm publish --access public --tag "$DIST_TAG" packages/rulesets/sveltekit
-          npm publish --access public --tag "$DIST_TAG" packages/analyzers/javascript
-          npm publish --access public --tag "$DIST_TAG" packages/cli
+          npm publish --access public --tag "$DIST_TAG" ./packages/core
+          npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/nextjs
+          npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/react-native
+          npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/express
+          npm publish --access public --tag "$DIST_TAG" ./packages/rulesets/sveltekit
+          npm publish --access public --tag "$DIST_TAG" ./packages/analyzers/javascript
+          npm publish --access public --tag "$DIST_TAG" ./packages/cli

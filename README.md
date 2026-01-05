@@ -10,8 +10,10 @@ Local-first security scanner for modern app frameworks.
 
 ## GitHub Action
 
+Until public release, pin to a pre-release tag (e.g. `v0.1.0-alpha.1`) or a commit SHA.
+
 ```yaml
-- uses: Reliability-Works/vibesec@v1
+- uses: Reliability-Works/vibesec@v0.1.0-alpha.1
   with:
     path: .
     framework: auto
@@ -24,7 +26,7 @@ Local-first security scanner for modern app frameworks.
 
 - Build locally: `docker build -t vibesec -f docker/Dockerfile .`
 - Run: `docker run --rm -v "$PWD:/repo" -w /repo vibesec scan .`
-- Pull from GHCR: `docker pull ghcr.io/reliability-works/vibesec:latest`
+- Pull from GHCR (tagged builds only): `docker pull ghcr.io/reliability-works/vibesec:v0.1.0-alpha.1`
 
 ## Config
 

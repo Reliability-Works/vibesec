@@ -3,7 +3,7 @@ name: release-docker
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v0.*.*'
   workflow_dispatch:
 
 permissions:
@@ -37,10 +37,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=sha,format=short
-            type=raw,value=latest
 
       - name: Build and push
         uses: docker/build-push-action@v5

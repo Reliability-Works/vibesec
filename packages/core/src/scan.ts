@@ -125,10 +125,10 @@ const configSchema = z.object({
   ignore: z.array(ignoreEntrySchema).optional(),
 })
 
-function loadConfig(rootDir: string, configPath?: string): Promise<VibeSecConfig> {
+function loadConfig(configRootDir: string, configPath?: string): Promise<VibeSecConfig> {
   const candidates = configPath
     ? [configPath]
-    : [path.join(rootDir, '.vibesec.yaml'), path.join(rootDir, '.vibesec.yml')]
+    : [path.join(configRootDir, '.vibesec.yaml'), path.join(configRootDir, '.vibesec.yml')]
 
   return (async () => {
     for (const candidate of candidates) {
@@ -172,8 +172,8 @@ const ruleSchema: z.ZodType<Rule> = z.object({
   ]),
 })
 
-async function loadCustomRules(rootDir: string, customRulesDir?: string): Promise<Rule[]> {
-  const rulesDir = customRulesDir ?? path.join(rootDir, '.vibesec', 'rules')
+async function loadCustomRules(configRootDir: string, customRulesDir?: string): Promise<Rule[]> {
+  const rulesDir = customRulesDir ?? path.join(configRootDir, '.vibesec', 'rules')
   if (!(await fileExists(rulesDir))) return []
 
   const entries = await fs.readdir(rulesDir, { withFileTypes: true })
@@ -279,19 +279,27 @@ function makeFinding(args: {
 }
 
 export async function scanProject(options: ScanOptions): Promise<ScanResult> {
-  const rootDir = path.resolve(options.rootDir)
+  const scanDir = path.resolve(options.rootDir)
+  const configRootDir = path.resolve(options.configRootDir ?? scanDir)
+  const pathBaseDir = path.resolve(options.pathBaseDir ?? scanDir)
   const maxFileSizeBytes = options.maxFileSizeBytes ?? DEFAULT_MAX_FILE_SIZE_BYTES
 
-  const config = await loadConfig(rootDir, options.configPath)
+  const config = await loadConfig(configRootDir, options.configPath)
   const additionalRules = options.additionalRules ?? []
   const rules = [
     ...BUILTIN_RULES,
-    ...(await loadCustomRules(rootDir, options.customRulesDir)),
+    ...(await loadCustomRules(configRootDir, options.customRulesDir)),
     ...additionalRules,
   ]
 
-  const frameworks = options.frameworks ?? (await detectFrameworks(rootDir))
-  const files = await listProjectFiles(rootDir)
+  const frameworks = options.frameworks ?? (await detectFrameworks(scanDir))
+  const files = await listProjectFiles(scanDir)
+
+  const toBasePath = (scanRelativePath: string): string => {
+    const absolutePath = path.join(scanDir, scanRelativePath)
+    const rel = path.relative(pathBaseDir, absolutePath)
+    return (rel || scanRelativePath).split(path.sep).join('/')
+  }
 
   const findings: Finding[] = []
   let ignoredFindings = 0
@@ -302,7 +310,7 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
       for (const relativePath of matches) {
         const finding = makeFinding({
           rule,
-          location: { path: relativePath, startLine: 1, startColumn: 1 },
+          location: { path: toBasePath(relativePath), startLine: 1, startColumn: 1 },
           message: rule.matcher.message,
         })
 
@@ -322,7 +330,7 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
     for (const relativePath of files) {
       if (!matchesFile(relativePath)) continue
 
-      const fullPath = path.join(rootDir, relativePath)
+      const fullPath = path.join(scanDir, relativePath)
       let text: string | null
       try {
         text = await readTextFileIfSafe(fullPath, maxFileSizeBytes)
@@ -339,7 +347,11 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
 
       const finding = makeFinding({
         rule,
-        location: { path: relativePath, startLine: lineNumber, startColumn: columnNumber },
+        location: {
+          path: toBasePath(relativePath),
+          startLine: lineNumber,
+          startColumn: columnNumber,
+        },
         message: rule.matcher.message,
         excerpt,
         matchText: match[0],
@@ -358,7 +370,7 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
   findings.sort((a, b) => a.severityRank - b.severityRank)
 
   return {
-    rootDir,
+    rootDir: scanDir,
     frameworks,
     scannedFiles: files.length,
     ignoredFindings,

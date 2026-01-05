@@ -5,7 +5,9 @@ import path from 'node:path'
 
 import { Command } from 'commander'
 import {
+  detectFrameworks,
   detectFrameworksInWorkspace,
+  listWorkspaceProjectRoots,
   scanProject,
   severityFromString,
   toHtml,
@@ -77,6 +79,59 @@ function selectFrameworks(detected: FrameworkDetection[], requested: string): Fr
   return selected
 }
 
+function toPosixPath(p: string): string {
+  return p.split(path.sep).join('/')
+}
+
+function joinPrefixedGlob(prefix: string, glob: string): string {
+  const normalizedPrefix = prefix.replace(/\/+$/, '')
+  if (!normalizedPrefix || normalizedPrefix === '.') return glob
+
+  const normalizedGlob = glob.replace(/^\/+/, '')
+  return `${normalizedPrefix}/${normalizedGlob}`
+}
+
+function scopeRulesToPrefix(rules: Rule[], prefix: string): Rule[] {
+  const normalizedPrefix = toPosixPath(prefix)
+  if (!normalizedPrefix || normalizedPrefix === '.') return rules
+
+  return rules.map((rule) => {
+    if (rule.matcher.type === 'regex') {
+      return {
+        ...rule,
+        matcher: {
+          ...rule.matcher,
+          fileGlobs: rule.matcher.fileGlobs.map((glob) => joinPrefixedGlob(normalizedPrefix, glob)),
+        },
+      }
+    }
+
+    return {
+      ...rule,
+      matcher: {
+        ...rule.matcher,
+        paths: rule.matcher.paths.map((p) => joinPrefixedGlob(normalizedPrefix, p)),
+      },
+    }
+  })
+}
+
+async function loadWorkspaceScopedRules(workspaceRoot: string): Promise<Rule[]> {
+  const projectRoots = await listWorkspaceProjectRoots(workspaceRoot)
+  const rules: Rule[] = []
+
+  for (const projectRoot of projectRoots) {
+    const frameworks = await detectFrameworks(projectRoot)
+    if (frameworks.length === 0) continue
+
+    const projectRules = await loadRulesForFrameworks(frameworks)
+    const projectPrefix = path.relative(workspaceRoot, projectRoot)
+    rules.push(...scopeRulesToPrefix(projectRules, projectPrefix))
+  }
+
+  return rules
+}
+
 async function loadRulesetRules(packageName: string): Promise<Rule[]> {
   const pkgJsonPath = require.resolve(`${packageName}/package.json`)
   const rulesPath = path.join(path.dirname(pkgJsonPath), 'rules.json')
@@ -140,7 +195,10 @@ export async function runCli(argv: string[]): Promise<void> {
       const absoluteRoot = path.resolve(scanPath)
       const detected = await detectFrameworksInWorkspace(absoluteRoot)
       const frameworks = selectFrameworks(detected, options.framework)
-      const additionalRules = await loadRulesForFrameworks(frameworks)
+      const additionalRules =
+        options.framework === 'auto'
+          ? await loadWorkspaceScopedRules(absoluteRoot)
+          : await loadRulesForFrameworks(frameworks)
 
       const result = await scanProject({
         rootDir: absoluteRoot,

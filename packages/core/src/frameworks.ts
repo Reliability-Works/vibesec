@@ -89,9 +89,12 @@ function sortFrameworks(frameworks: FrameworkDetection[]): void {
 export async function detectFrameworks(rootDir: string): Promise<FrameworkDetection[]> {
   const pkg = await readPackageJson(rootDir)
 
+  const hasNextDep = packageHasDep(pkg, 'next')
+  const hasNextEnv = await hasFile(rootDir, 'next-env.d.ts')
+
   const nextEvidence: string[] = []
-  pushIf('dependency: next', packageHasDep(pkg, 'next'), nextEvidence)
-  pushIf('file: next-env.d.ts', await hasFile(rootDir, 'next-env.d.ts'), nextEvidence)
+  pushIf('dependency: next', hasNextDep, nextEvidence)
+  pushIf('file: next-env.d.ts', hasNextEnv, nextEvidence)
   pushIf('dir: app/', await hasDir(rootDir, 'app'), nextEvidence)
   pushIf('dir: pages/', await hasDir(rootDir, 'pages'), nextEvidence)
 
@@ -100,8 +103,10 @@ export async function detectFrameworks(rootDir: string): Promise<FrameworkDetect
     pushIf(`file: ${f}`, await hasFile(rootDir, f), nextEvidence)
   }
 
+  const hasReactNativeDep = packageHasDep(pkg, 'react-native')
+
   const rnEvidence: string[] = []
-  pushIf('dependency: react-native', packageHasDep(pkg, 'react-native'), rnEvidence)
+  pushIf('dependency: react-native', hasReactNativeDep, rnEvidence)
   pushIf('dir: ios/', await hasDir(rootDir, 'ios'), rnEvidence)
   pushIf('dir: android/', await hasDir(rootDir, 'android'), rnEvidence)
   pushIf('file: metro.config.js', await hasFile(rootDir, 'metro.config.js'), rnEvidence)
@@ -116,17 +121,19 @@ export async function detectFrameworks(rootDir: string): Promise<FrameworkDetect
   const expressEvidence: string[] = []
   pushIf('dependency: express', packageHasDep(pkg, 'express'), expressEvidence)
 
+  const hasSvelteKitDep = packageHasDep(pkg, '@sveltejs/kit')
+
   const kitEvidence: string[] = []
-  pushIf('dependency: @sveltejs/kit', packageHasDep(pkg, '@sveltejs/kit'), kitEvidence)
+  pushIf('dependency: @sveltejs/kit', hasSvelteKitDep, kitEvidence)
   pushIf('file: svelte.config.js', await hasFile(rootDir, 'svelte.config.js'), kitEvidence)
   pushIf('file: svelte.config.ts', await hasFile(rootDir, 'svelte.config.ts'), kitEvidence)
   pushIf('dir: src/routes/', await hasDir(rootDir, path.join('src', 'routes')), kitEvidence)
 
   const frameworks: FrameworkDetection[] = []
 
-  if (nextEvidence.length > 0) frameworks.push(makeDetection('nextjs', nextEvidence))
+  if (hasNextDep || hasNextEnv) frameworks.push(makeDetection('nextjs', nextEvidence))
 
-  if (rnEvidence.length > 0) {
+  if (hasReactNativeDep) {
     const combined = Array.from(new Set([...rnEvidence, ...expoEvidence]))
     frameworks.push(makeDetection('react-native', combined))
   }
@@ -135,14 +142,14 @@ export async function detectFrameworks(rootDir: string): Promise<FrameworkDetect
 
   if (expressEvidence.length > 0) frameworks.push(makeDetection('express', expressEvidence))
 
-  if (kitEvidence.length > 0) frameworks.push(makeDetection('sveltekit', kitEvidence))
+  if (hasSvelteKitDep) frameworks.push(makeDetection('sveltekit', kitEvidence))
 
   sortFrameworks(frameworks)
 
   return frameworks
 }
 
-export async function detectFrameworksInWorkspace(rootDir: string): Promise<FrameworkDetection[]> {
+export async function listWorkspaceProjectRoots(rootDir: string): Promise<string[]> {
   const packageJsonPaths = await fg('**/package.json', {
     cwd: rootDir,
     dot: true,
@@ -151,9 +158,21 @@ export async function detectFrameworksInWorkspace(rootDir: string): Promise<Fram
     ignore: WORKSPACE_IGNORES,
   })
 
+  const resolvedRoot = path.resolve(rootDir)
+
   const roots = Array.from(
     new Set(packageJsonPaths.map((relativePath) => path.join(rootDir, path.dirname(relativePath)))),
   )
+    .map((p) => path.resolve(p))
+    .filter((p) => p !== resolvedRoot)
+
+  roots.sort()
+
+  return roots
+}
+
+export async function detectFrameworksInWorkspace(rootDir: string): Promise<FrameworkDetection[]> {
+  const roots = await listWorkspaceProjectRoots(rootDir)
 
   const byFramework = new Map<FrameworkId, Set<string>>()
 

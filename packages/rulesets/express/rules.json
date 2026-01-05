@@ -1,0 +1,39 @@
+[
+  {
+    "id": "express/cors-wildcard-origin",
+    "severity": "high",
+    "title": "CORS allows any origin",
+    "description": "Allowing origin '*' can enable unwanted cross-origin access if credentials or sensitive endpoints are involved.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "\\borigin\\s*:\\s*['\"]\\*['\"]",
+      "message": "CORS origin appears to be configured as '*'."
+    }
+  },
+  {
+    "id": "express/allow-origin-star-header",
+    "severity": "high",
+    "title": "Access-Control-Allow-Origin header set to '*'",
+    "description": "Setting Access-Control-Allow-Origin to '*' can expose endpoints to cross-origin callers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Access-Control-Allow-Origin\\s*['\"]?\\s*,\\s*['\"]\\*['\"]",
+      "message": "Access-Control-Allow-Origin appears to be set to '*'."
+    }
+  },
+  {
+    "id": "express/session-cookie-secure-false",
+    "severity": "high",
+    "title": "Session cookie configured with secure: false",
+    "description": "Session cookies without secure flag can be sent over HTTP, increasing the risk of session theft on insecure networks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "cookie\\s*:\\s*\\{[^}]*\\bsecure\\s*:\\s*false",
+      "flags": "s",
+      "message": "Session cookie appears to set secure: false."
+    }
+  }
+]

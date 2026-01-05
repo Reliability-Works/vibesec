@@ -5,7 +5,7 @@ import path from 'node:path'
 
 import { Command } from 'commander'
 import {
-  detectFrameworks,
+  detectFrameworksInWorkspace,
   scanProject,
   severityFromString,
   toHtml,
@@ -102,6 +102,14 @@ async function loadRulesForFrameworks(frameworks: FrameworkDetection[]): Promise
     rules.push(...(await loadRulesetRules('@vibesec/ruleset-react-native')))
   }
 
+  if (ids.has('express')) {
+    rules.push(...(await loadRulesetRules('@vibesec/ruleset-express')))
+  }
+
+  if (ids.has('sveltekit')) {
+    rules.push(...(await loadRulesetRules('@vibesec/ruleset-sveltekit')))
+  }
+
   return rules
 }
 
@@ -119,14 +127,18 @@ export async function runCli(argv: string[]): Promise<void> {
     .option('-o, --output <format>', 'Output format: cli|json|sarif|html', 'cli')
     .option('--out-file <path>', 'Write output to file')
     .option('--fail-on <severity>', 'Fail on or above: low|medium|high|critical', 'high')
-    .option('--framework <name>', 'Framework: auto|nextjs|react-native|expo', 'auto')
+    .option(
+      '--framework <name>',
+      'Framework: auto|nextjs|react-native|expo|express|sveltekit (comma-separated)',
+      'auto',
+    )
     .option('--config <path>', 'Config file path (.vibesec.yaml by default)')
     .option('--rules-dir <path>', 'Custom rules dir (.vibesec/rules by default)')
     .action(async (scanPath: string, options: ScanCommandOptions) => {
       const failOn = severityFromString(options.failOn)
 
       const absoluteRoot = path.resolve(scanPath)
-      const detected = await detectFrameworks(absoluteRoot)
+      const detected = await detectFrameworksInWorkspace(absoluteRoot)
       const frameworks = selectFrameworks(detected, options.framework)
       const additionalRules = await loadRulesForFrameworks(frameworks)
 

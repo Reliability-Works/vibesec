@@ -1,0 +1,7 @@
+{
+  "name": "kit",
+  "private": true,
+  "dependencies": {
+    "@sveltejs/kit": "2.0.0"
+  }
+}

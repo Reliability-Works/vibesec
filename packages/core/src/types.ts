@@ -23,7 +23,7 @@ export type Finding = {
   excerpt?: string
 }
 
-export type FrameworkId = 'nextjs' | 'react-native' | 'expo'
+export type FrameworkId = 'nextjs' | 'react-native' | 'expo' | 'express' | 'sveltekit'
 
 export type FrameworkDetection = {
   id: FrameworkId

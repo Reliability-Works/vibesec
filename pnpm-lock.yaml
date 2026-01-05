@@ -37,12 +37,18 @@ importers:
       '@vibesec/core':
         specifier: workspace:*
         version: link:../core
+      '@vibesec/ruleset-express':
+        specifier: workspace:*
+        version: link:../rulesets/express
       '@vibesec/ruleset-nextjs':
         specifier: workspace:*
         version: link:../rulesets/nextjs
       '@vibesec/ruleset-react-native':
         specifier: workspace:*
         version: link:../rulesets/react-native
+      '@vibesec/ruleset-sveltekit':
+        specifier: workspace:*
+        version: link:../rulesets/sveltekit
       commander:
         specifier: ^12.0.0
         version: 12.1.0
@@ -62,9 +68,13 @@ importers:
         specifier: ^3.0.0
         version: 3.25.76
 
+  packages/rulesets/express: {}
+
   packages/rulesets/nextjs: {}
 
   packages/rulesets/react-native: {}
+
+  packages/rulesets/sveltekit: {}
 
 packages:
   '@eslint-community/eslint-utils@4.9.1':

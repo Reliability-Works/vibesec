@@ -1,0 +1,26 @@
+[
+  {
+    "id": "sveltekit/csrf-checkorigin-false",
+    "severity": "high",
+    "title": "CSRF origin check disabled",
+    "description": "Disabling origin checks weakens default CSRF protections and can make cross-site request forgery easier.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/svelte.config.{js,cjs,mjs,ts}"],
+      "pattern": "checkOrigin\\s*:\\s*false",
+      "message": "SvelteKit csrf.checkOrigin appears to be set to false."
+    }
+  },
+  {
+    "id": "sveltekit/vite-server-host-all",
+    "severity": "medium",
+    "title": "Vite dev server bound to all interfaces",
+    "description": "Binding the dev server to 0.0.0.0 can expose it on the local network; ensure this is intentional.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/vite.config.{js,cjs,mjs,ts}"],
+      "pattern": "\\bhost\\s*:\\s*['\"]0\\.0\\.0\\.0['\"]",
+      "message": "Vite server host appears to be set to 0.0.0.0."
+    }
+  }
+]

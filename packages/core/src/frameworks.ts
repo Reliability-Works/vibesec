@@ -2,12 +2,27 @@ import { readFile, stat } from 'node:fs/promises'
 import type { Stats } from 'node:fs'
 import path from 'node:path'
 
+import fg from 'fast-glob'
+
 import type { FrameworkDetection, FrameworkId } from './types'
 
 type PackageJson = {
   dependencies?: Record<string, string>
   devDependencies?: Record<string, string>
 }
+
+const WORKSPACE_IGNORES = [
+  '**/.git/**',
+  '**/node_modules/**',
+  '**/dist/**',
+  '**/build/**',
+  '**/coverage/**',
+  '**/.next/**',
+  '**/.turbo/**',
+  '**/.cache/**',
+  '**/.yarn/**',
+  '**/.pnpm/**',
+]
 
 async function pathStat(p: string): Promise<Stats | null> {
   try {
@@ -63,6 +78,14 @@ function makeDetection(id: FrameworkId, evidence: string[]): FrameworkDetection 
   }
 }
 
+function sortFrameworks(frameworks: FrameworkDetection[]): void {
+  frameworks.sort((a, b) => {
+    const score = (d: FrameworkDetection) =>
+      d.confidence === 'high' ? 3 : d.confidence === 'medium' ? 2 : 1
+    return score(b) - score(a)
+  })
+}
+
 export async function detectFrameworks(rootDir: string): Promise<FrameworkDetection[]> {
   const pkg = await readPackageJson(rootDir)
 
@@ -90,6 +113,15 @@ export async function detectFrameworks(rootDir: string): Promise<FrameworkDetect
   pushIf('file: app.config.ts', await hasFile(rootDir, 'app.config.ts'), expoEvidence)
   pushIf('file: eas.json', await hasFile(rootDir, 'eas.json'), expoEvidence)
 
+  const expressEvidence: string[] = []
+  pushIf('dependency: express', packageHasDep(pkg, 'express'), expressEvidence)
+
+  const kitEvidence: string[] = []
+  pushIf('dependency: @sveltejs/kit', packageHasDep(pkg, '@sveltejs/kit'), kitEvidence)
+  pushIf('file: svelte.config.js', await hasFile(rootDir, 'svelte.config.js'), kitEvidence)
+  pushIf('file: svelte.config.ts', await hasFile(rootDir, 'svelte.config.ts'), kitEvidence)
+  pushIf('dir: src/routes/', await hasDir(rootDir, path.join('src', 'routes')), kitEvidence)
+
   const frameworks: FrameworkDetection[] = []
 
   if (nextEvidence.length > 0) frameworks.push(makeDetection('nextjs', nextEvidence))
@@ -101,11 +133,51 @@ export async function detectFrameworks(rootDir: string): Promise<FrameworkDetect
 
   if (expoEvidence.length > 0) frameworks.push(makeDetection('expo', expoEvidence))
 
-  frameworks.sort((a, b) => {
-    const score = (d: FrameworkDetection) =>
-      d.confidence === 'high' ? 3 : d.confidence === 'medium' ? 2 : 1
-    return score(b) - score(a)
+  if (expressEvidence.length > 0) frameworks.push(makeDetection('express', expressEvidence))
+
+  if (kitEvidence.length > 0) frameworks.push(makeDetection('sveltekit', kitEvidence))
+
+  sortFrameworks(frameworks)
+
+  return frameworks
+}
+
+export async function detectFrameworksInWorkspace(rootDir: string): Promise<FrameworkDetection[]> {
+  const packageJsonPaths = await fg('**/package.json', {
+    cwd: rootDir,
+    dot: true,
+    onlyFiles: true,
+    followSymbolicLinks: false,
+    ignore: WORKSPACE_IGNORES,
   })
+
+  const roots = Array.from(
+    new Set(packageJsonPaths.map((relativePath) => path.join(rootDir, path.dirname(relativePath)))),
+  )
+
+  const byFramework = new Map<FrameworkId, Set<string>>()
+
+  for (const projectRoot of roots) {
+    const detections = await detectFrameworks(projectRoot)
+    if (detections.length === 0) continue
+
+    const relativeRoot = path.relative(rootDir, projectRoot) || '.'
+    for (const detection of detections) {
+      const existing = byFramework.get(detection.id) ?? new Set<string>()
+      for (const evidence of detection.evidence) {
+        existing.add(`${relativeRoot}: ${evidence}`)
+      }
+      byFramework.set(detection.id, existing)
+    }
+  }
+
+  const frameworks: FrameworkDetection[] = []
+
+  for (const [id, evidenceSet] of byFramework.entries()) {
+    frameworks.push(makeDetection(id, Array.from(evidenceSet)))
+  }
+
+  sortFrameworks(frameworks)
 
   return frameworks
 }

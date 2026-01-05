@@ -37,13 +37,13 @@ jobs:
 
           VERSION="${GITHUB_REF_NAME#v}"
 
-          pnpm -C packages/core exec npm version "$VERSION" --no-git-tag-version
-          pnpm -C packages/analyzers/javascript exec npm version "$VERSION" --no-git-tag-version
-          pnpm -C packages/rulesets/nextjs exec npm version "$VERSION" --no-git-tag-version
-          pnpm -C packages/rulesets/react-native exec npm version "$VERSION" --no-git-tag-version
-          pnpm -C packages/rulesets/express exec npm version "$VERSION" --no-git-tag-version
-          pnpm -C packages/rulesets/sveltekit exec npm version "$VERSION" --no-git-tag-version
-          pnpm -C packages/cli exec npm version "$VERSION" --no-git-tag-version
+          pnpm -C packages/core exec npm version "$VERSION" --no-git-tag-version --allow-same-version
+          pnpm -C packages/analyzers/javascript exec npm version "$VERSION" --no-git-tag-version --allow-same-version
+          pnpm -C packages/rulesets/nextjs exec npm version "$VERSION" --no-git-tag-version --allow-same-version
+          pnpm -C packages/rulesets/react-native exec npm version "$VERSION" --no-git-tag-version --allow-same-version
+          pnpm -C packages/rulesets/express exec npm version "$VERSION" --no-git-tag-version --allow-same-version
+          pnpm -C packages/rulesets/sveltekit exec npm version "$VERSION" --no-git-tag-version --allow-same-version
+          pnpm -C packages/cli exec npm version "$VERSION" --no-git-tag-version --allow-same-version
 
       - name: Publish to npm
         env:

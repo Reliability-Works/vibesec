@@ -1,0 +1,66 @@
+name: release-npm
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.27.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Test
+        run: pnpm test
+
+      - name: Set versions from tag
+        run: |
+          set -euo pipefail
+
+          VERSION="${GITHUB_REF_NAME#v}"
+
+          pnpm -C packages/core exec npm version "$VERSION" --no-git-tag-version
+          pnpm -C packages/analyzers/javascript exec npm version "$VERSION" --no-git-tag-version
+          pnpm -C packages/rulesets/nextjs exec npm version "$VERSION" --no-git-tag-version
+          pnpm -C packages/rulesets/react-native exec npm version "$VERSION" --no-git-tag-version
+          pnpm -C packages/rulesets/express exec npm version "$VERSION" --no-git-tag-version
+          pnpm -C packages/rulesets/sveltekit exec npm version "$VERSION" --no-git-tag-version
+          pnpm -C packages/cli exec npm version "$VERSION" --no-git-tag-version
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${GITHUB_REF_NAME#v}"
+          DIST_TAG=latest
+          if [[ "$VERSION" == *-* ]]; then
+            DIST_TAG=next
+          fi
+
+          npm publish --access public --tag "$DIST_TAG" packages/core
+          npm publish --access public --tag "$DIST_TAG" packages/rulesets/nextjs
+          npm publish --access public --tag "$DIST_TAG" packages/rulesets/react-native
+          npm publish --access public --tag "$DIST_TAG" packages/rulesets/express
+          npm publish --access public --tag "$DIST_TAG" packages/rulesets/sveltekit
+          npm publish --access public --tag "$DIST_TAG" packages/analyzers/javascript
+          npm publish --access public --tag "$DIST_TAG" packages/cli

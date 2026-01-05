@@ -1,5 +1,4 @@
 {
-  "name": "@vibesec/ruleset-sveltekit",
-  "version": "0.0.0",
-  "private": true
+  "name": "@reliability-works/ruleset-sveltekit",
+  "version": "0.1.0"
 }

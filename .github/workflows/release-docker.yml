@@ -3,7 +3,7 @@ name: release-docker
 on:
   push:
     tags:
-      - 'v0.*.*'
+      - 'v*.*.*'
   workflow_dispatch:
 
 permissions:

@@ -44,6 +44,7 @@ export type ScanOptions = {
   pathBaseDir?: string
   configRootDir?: string
   configPath?: string
+  baselinePath?: string
   customRulesDir?: string
   frameworks?: FrameworkDetection[]
   additionalRules?: Rule[]

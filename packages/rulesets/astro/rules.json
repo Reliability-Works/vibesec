@@ -1,0 +1,26 @@
+[
+  {
+    "id": "astro/set-html",
+    "severity": "medium",
+    "title": "Raw HTML rendering via set:html",
+    "description": "Astro's set:html renders raw HTML into the page. If the value is derived from user input, it can enable XSS unless sanitized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bset:html\\s*=",
+      "message": "set:html renders raw HTML; ensure the content is sanitized"
+    }
+  },
+  {
+    "id": "astro/inline-script",
+    "severity": "low",
+    "title": "Inline script usage",
+    "description": "Inline scripts can increase XSS risk and complicate CSP. Prefer external scripts and a strict Content Security Policy.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bis:inline\\b",
+      "message": "Inline script detected; prefer external scripts and CSP"
+    }
+  }
+]

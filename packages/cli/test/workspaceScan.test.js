@@ -31,4 +31,11 @@ test('workspace scan scopes framework rules to project roots', async () => {
 
   assert.ok(nextPaths.includes('apps/web/next.config.js'))
   assert.equal(nextPaths.includes('apps/api/next.config.js'), false)
+
+  const astroPaths = result.findings
+    .filter((finding) => finding.ruleId === 'astro/set-html')
+    .map((finding) => finding.location.path)
+
+  assert.ok(astroPaths.includes('apps/astro/src/pages/index.astro'))
+  assert.equal(astroPaths.includes('apps/web/decoy.astro'), false)
 })

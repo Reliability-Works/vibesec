@@ -169,6 +169,10 @@ async function loadRulesForFrameworks(frameworks: FrameworkDetection[]): Promise
     rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-sveltekit')))
   }
 
+  if (ids.has('astro')) {
+    rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-astro')))
+  }
+
   return rules
 }
 
@@ -208,7 +212,7 @@ export async function runCli(argv: string[]): Promise<void> {
     .option('--fail-on <severity>', 'Fail on or above: low|medium|high|critical', 'high')
     .option(
       '--framework <name>',
-      'Framework: auto|nextjs|react-native|expo|express|sveltekit (comma-separated)',
+      'Framework: auto|nextjs|react-native|expo|express|sveltekit|astro (comma-separated)',
       'auto',
     )
     .option('--config <path>', 'Config file path (.vibesec.yaml by default)')

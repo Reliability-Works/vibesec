@@ -129,6 +129,20 @@ export async function detectFrameworks(rootDir: string): Promise<FrameworkDetect
   pushIf('file: svelte.config.ts', await hasFile(rootDir, 'svelte.config.ts'), kitEvidence)
   pushIf('dir: src/routes/', await hasDir(rootDir, path.join('src', 'routes')), kitEvidence)
 
+  const astroEvidence: string[] = []
+  pushIf('dependency: astro', packageHasDep(pkg, 'astro'), astroEvidence)
+  pushIf('dir: src/pages/', await hasDir(rootDir, path.join('src', 'pages')), astroEvidence)
+
+  const astroConfigFiles = [
+    'astro.config.mjs',
+    'astro.config.js',
+    'astro.config.cjs',
+    'astro.config.ts',
+  ]
+  for (const f of astroConfigFiles) {
+    pushIf(`file: ${f}`, await hasFile(rootDir, f), astroEvidence)
+  }
+
   const frameworks: FrameworkDetection[] = []
 
   if (hasNextDep || hasNextEnv) frameworks.push(makeDetection('nextjs', nextEvidence))
@@ -143,6 +157,8 @@ export async function detectFrameworks(rootDir: string): Promise<FrameworkDetect
   if (expressEvidence.length > 0) frameworks.push(makeDetection('express', expressEvidence))
 
   if (hasSvelteKitDep) frameworks.push(makeDetection('sveltekit', kitEvidence))
+
+  if (astroEvidence.length > 0) frameworks.push(makeDetection('astro', astroEvidence))
 
   sortFrameworks(frameworks)
 

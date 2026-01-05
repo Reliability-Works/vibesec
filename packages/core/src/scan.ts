@@ -8,6 +8,7 @@ import { z } from 'zod'
 import YAML from 'yaml'
 
 import { BUILTIN_RULES } from './builtinRules'
+import { detectFrameworks } from './frameworks'
 import type {
   Finding,
   FindingLocation,
@@ -266,6 +267,8 @@ function makeFinding(args: {
 
   return {
     ruleId: args.rule.id,
+    ruleTitle: args.rule.title,
+    ruleDescription: args.rule.description,
     severity: args.rule.severity,
     severityRank: severity.rank,
     message: args.message,
@@ -280,8 +283,14 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
   const maxFileSizeBytes = options.maxFileSizeBytes ?? DEFAULT_MAX_FILE_SIZE_BYTES
 
   const config = await loadConfig(rootDir, options.configPath)
-  const rules = [...BUILTIN_RULES, ...(await loadCustomRules(rootDir, options.customRulesDir))]
+  const additionalRules = options.additionalRules ?? []
+  const rules = [
+    ...BUILTIN_RULES,
+    ...(await loadCustomRules(rootDir, options.customRulesDir)),
+    ...additionalRules,
+  ]
 
+  const frameworks = options.frameworks ?? (await detectFrameworks(rootDir))
   const files = await listProjectFiles(rootDir)
 
   const findings: Finding[] = []
@@ -350,6 +359,7 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
 
   return {
     rootDir,
+    frameworks,
     scannedFiles: files.length,
     ignoredFindings,
     findings,

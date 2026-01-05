@@ -37,6 +37,12 @@ importers:
       '@vibesec/core':
         specifier: workspace:*
         version: link:../core
+      '@vibesec/ruleset-nextjs':
+        specifier: workspace:*
+        version: link:../rulesets/nextjs
+      '@vibesec/ruleset-react-native':
+        specifier: workspace:*
+        version: link:../rulesets/react-native
       commander:
         specifier: ^12.0.0
         version: 12.1.0

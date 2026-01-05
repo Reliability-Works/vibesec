@@ -1,0 +1,38 @@
+[
+  {
+    "id": "rn/cleartext-traffic",
+    "severity": "high",
+    "title": "Cleartext traffic allowed on Android",
+    "description": "Allowing cleartext traffic can expose sensitive data over unencrypted connections.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/AndroidManifest.xml"],
+      "pattern": "usesCleartextTraffic\\s*=\\s*\\\"true\\\"",
+      "message": "usesCleartextTraffic is enabled"
+    }
+  },
+  {
+    "id": "rn/ats-arbitrary-loads",
+    "severity": "high",
+    "title": "ATS allows arbitrary loads on iOS",
+    "description": "Disabling App Transport Security can allow insecure HTTP traffic.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/Info.plist"],
+      "pattern": "NSAllowsArbitraryLoads[\\s\\S]*<true\\s*/>",
+      "message": "NSAllowsArbitraryLoads appears enabled"
+    }
+  },
+  {
+    "id": "rn/asyncstorage-token-key",
+    "severity": "high",
+    "title": "Potential token stored in AsyncStorage",
+    "description": "AsyncStorage is not suitable for storing secrets; prefer platform secure storage for tokens.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "AsyncStorage\\.setItem\\(\\s*['\\\"][^'\\\"]*(token|secret|key|password)[^'\\\"]*['\\\"]",
+      "message": "AsyncStorage key name suggests sensitive data storage"
+    }
+  }
+]

@@ -5,6 +5,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { Command } from 'commander'
+
+import { getJavaScriptRules } from '@reliability-works/analyzer-javascript'
 import {
   detectFrameworks,
   detectFrameworksInWorkspace,
@@ -216,10 +218,13 @@ export async function runCli(argv: string[]): Promise<void> {
       const absoluteRoot = path.resolve(scanPath)
       const detected = await detectFrameworksInWorkspace(absoluteRoot)
       const frameworks = selectFrameworks(detected, options.framework)
-      const additionalRules =
-        options.framework === 'auto'
+      const analyzerRules = getJavaScriptRules()
+      const additionalRules = [
+        ...analyzerRules,
+        ...(options.framework === 'auto'
           ? await loadWorkspaceScopedRules(absoluteRoot)
-          : await loadRulesForFrameworks(frameworks)
+          : await loadRulesForFrameworks(frameworks)),
+      ]
 
       const result = await scanProject({
         rootDir: absoluteRoot,

@@ -46,6 +46,9 @@ importers:
       '@reliabilityworks/ruleset-astro':
         specifier: workspace:*
         version: link:../rulesets/astro
+      '@reliabilityworks/ruleset-expo':
+        specifier: workspace:*
+        version: link:../rulesets/expo
       '@reliabilityworks/ruleset-express':
         specifier: workspace:*
         version: link:../rulesets/express
@@ -78,6 +81,8 @@ importers:
         version: 3.25.76
 
   packages/rulesets/astro: {}
+
+  packages/rulesets/expo: {}
 
   packages/rulesets/express: {}
 

@@ -331,17 +331,28 @@ export async function runCli(argv: string[]): Promise<void> {
       const absoluteRoot = path.resolve(scanPath)
 
       logInfo('Detecting frameworks...', options)
-      const detected = await detectFrameworksInWorkspace(absoluteRoot)
-      const frameworks = selectFrameworks(detected, options.framework)
+      const workspaceDetected = await detectFrameworksInWorkspace(absoluteRoot)
+
+      let frameworks: FrameworkDetection[]
+      let frameworkRules: Rule[]
+
+      if (options.framework === 'auto') {
+        if (workspaceDetected.length > 0) {
+          frameworks = workspaceDetected
+          frameworkRules = await loadWorkspaceScopedRules(absoluteRoot)
+        } else {
+          const rootDetected = await detectFrameworks(absoluteRoot)
+          frameworks = rootDetected
+          frameworkRules = await loadRulesForFrameworks(rootDetected)
+        }
+      } else {
+        frameworks = selectFrameworks(workspaceDetected, options.framework)
+        frameworkRules = await loadRulesForFrameworks(frameworks)
+      }
 
       logInfo('Loading rulesets...', options)
       const analyzerRules = getJavaScriptRules()
-      const additionalRules = [
-        ...analyzerRules,
-        ...(options.framework === 'auto'
-          ? await loadWorkspaceScopedRules(absoluteRoot)
-          : await loadRulesForFrameworks(frameworks)),
-      ]
+      const additionalRules = [...analyzerRules, ...frameworkRules]
 
       logInfo('Scanning files...', options)
       if (shouldShowInfo(options)) process.stderr.write('\n')

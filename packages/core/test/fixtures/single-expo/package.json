@@ -1,0 +1,9 @@
+{
+  "name": "single-expo",
+  "private": true,
+  "dependencies": {
+    "expo": "54.0.0",
+    "react-native": "0.81.0",
+    "@react-native-async-storage/async-storage": "2.0.0"
+  }
+}

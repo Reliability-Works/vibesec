@@ -1,0 +1,7 @@
+{
+  "name": "single-rn",
+  "private": true,
+  "dependencies": {
+    "react-native": "0.81.0"
+  }
+}

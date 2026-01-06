@@ -30,28 +30,127 @@ type ScanCommandOptions = {
   config?: string
   writeBaseline?: string | boolean
   rulesDir?: string
+  color?: boolean
 }
 
-function formatCliOutput(result: ScanResult): string {
+type CliOutputOptions = {
+  output: string
+  outFile?: string
+  color?: boolean
+}
+
+type CliTheme = {
+  critical: (s: string) => string
+  high: (s: string) => string
+  medium: (s: string) => string
+  low: (s: string) => string
+  info: (s: string) => string
+  ruleId: (s: string) => string
+  location: (s: string) => string
+  muted: (s: string) => string
+  bold: (s: string) => string
+}
+
+function createAnsiTheme(enabled: boolean): CliTheme {
+  const wrap = (open: string, close: string) => (s: string) => (enabled ? `${open}${s}${close}` : s)
+
+  const reset = '\x1b[0m'
+  const bold = wrap('\x1b[1m', reset)
+  const dim = wrap('\x1b[2m', reset)
+
+  const red = wrap('\x1b[31m', reset)
+  const yellow = wrap('\x1b[33m', reset)
+  const blue = wrap('\x1b[34m', reset)
+  const magenta = wrap('\x1b[35m', reset)
+  const green = wrap('\x1b[32m', reset)
+  const cyan = wrap('\x1b[36m', reset)
+
+  return {
+    critical: red,
+    high: yellow,
+    medium: magenta,
+    low: blue,
+    info: green,
+    ruleId: cyan,
+    location: dim,
+    muted: dim,
+    bold,
+  }
+}
+
+function shouldUseColor(options: CliOutputOptions): boolean {
+  if (options.outFile) return false
+  if (process.env.NO_COLOR != null) return false
+  if (process.env.TERM === 'dumb') return false
+  if (!process.stdout.isTTY) return false
+
+  if (typeof options.color === 'boolean') return options.color
+
+  return true
+}
+
+function formatCliOutput(
+  result: ScanResult,
+  options: CliOutputOptions = { output: 'cli' },
+): string {
+  const theme = createAnsiTheme(shouldUseColor(options))
   const lines: string[] = []
 
-  if (result.frameworks.length > 0) {
-    const frameworkList = result.frameworks.map((f) => f.id).join(', ')
-    lines.push(`Frameworks: ${frameworkList}`)
+  const divider = theme.muted('────────────────────────────────────────────────────────────')
+
+  if (result.findings.length > 0) {
+    lines.push(divider)
     lines.push('')
   }
 
   for (const finding of result.findings) {
-    lines.push(
-      `${finding.severity.toUpperCase()} ${finding.ruleId} ${finding.location.path}:${finding.location.startLine}`,
-    )
-    lines.push(`  ${finding.message}`)
+    const severity = finding.severity.toUpperCase()
+
+    const severityColor =
+      finding.severity === 'critical'
+        ? theme.critical
+        : finding.severity === 'high'
+          ? theme.high
+          : finding.severity === 'medium'
+            ? theme.medium
+            : theme.low
+
+    const header = `${severityColor('●')} ${severityColor(severity)} ${theme.ruleId(finding.ruleId)}`
+
+    lines.push(header)
+    lines.push(`${theme.bold(finding.message)}`)
+    lines.push(theme.location(`${finding.location.path}:${finding.location.startLine}`))
+
+    if (finding.excerpt) {
+      lines.push('')
+      lines.push(`  ${theme.muted(finding.excerpt)}`)
+    }
+
     lines.push('')
   }
 
-  lines.push(`Scan complete: ${result.findings.length} issue(s) found`)
+  if (result.findings.length > 0) {
+    lines.push(divider)
+    lines.push('')
+  }
+
+  const count = result.findings.length
+  const noun = count === 1 ? 'issue' : 'issues'
+  lines.push(`Scan complete. ${count} ${noun} found.`)
 
   return lines.join('\n') + '\n'
+}
+
+function shouldShowInfo(options: CliOutputOptions): boolean {
+  if (options.output !== 'cli') return false
+  if (options.outFile) return false
+  return Boolean(process.stderr.isTTY)
+}
+
+function logInfo(message: string, options: CliOutputOptions): void {
+  if (!shouldShowInfo(options)) return
+  const theme = createAnsiTheme(shouldUseColor(options))
+  process.stderr.write(`${theme.info('[info]')} ${message}\n`)
 }
 
 function parseFrameworkIds(input: string): FrameworkId[] {
@@ -225,12 +324,17 @@ export async function runCli(argv: string[]): Promise<void> {
       'Write baseline file (defaults to .vibesec.baseline.yaml in scan root)',
     )
     .option('--rules-dir <path>', 'Custom rules dir (.vibesec/rules by default)')
+    .option('--no-color', 'Disable ANSI colors')
     .action(async (scanPath: string, options: ScanCommandOptions) => {
       const failOn = severityFromString(options.failOn)
 
       const absoluteRoot = path.resolve(scanPath)
+
+      logInfo('Detecting frameworks...', options)
       const detected = await detectFrameworksInWorkspace(absoluteRoot)
       const frameworks = selectFrameworks(detected, options.framework)
+
+      logInfo('Loading rulesets...', options)
       const analyzerRules = getJavaScriptRules()
       const additionalRules = [
         ...analyzerRules,
@@ -238,6 +342,9 @@ export async function runCli(argv: string[]): Promise<void> {
           ? await loadWorkspaceScopedRules(absoluteRoot)
           : await loadRulesForFrameworks(frameworks)),
       ]
+
+      logInfo('Scanning files...', options)
+      if (shouldShowInfo(options)) process.stderr.write('\n')
 
       const writeBaselinePath =
         typeof options.writeBaseline === 'string'
@@ -300,7 +407,7 @@ export async function runCli(argv: string[]): Promise<void> {
           process.stdout.write(html + '\n')
         }
       } else {
-        process.stdout.write(formatCliOutput(result))
+        process.stdout.write(formatCliOutput(result, options))
       }
 
       const shouldFail = result.findings.some((finding) => finding.severityRank <= failOn.rank)

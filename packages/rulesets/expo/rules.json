@@ -1,0 +1,774 @@
+[
+  {
+    "id": "expo/android-cleartext-traffic",
+    "severity": "high",
+    "title": "Cleartext traffic allowed on Android",
+    "description": "Allowing cleartext traffic can expose sensitive data over unencrypted connections.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "usesCleartextTraffic\\\"?\\s*:\\s*true",
+      "message": "android.usesCleartextTraffic is enabled"
+    }
+  },
+  {
+    "id": "expo/android-allow-backup",
+    "severity": "medium",
+    "title": "Android backups allowed",
+    "description": "android.allowBackup can allow app data to be included in backups and restored to other devices.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "allowBackup\\\"?\\s*:\\s*true",
+      "message": "android.allowBackup is enabled"
+    }
+  },
+  {
+    "id": "expo/android-request-legacy-external-storage",
+    "severity": "medium",
+    "title": "Legacy external storage requested",
+    "description": "requestLegacyExternalStorage can broaden file access on Android 10 and may increase data exposure.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "requestLegacyExternalStorage\\\"?\\s*:\\s*true",
+      "message": "android.requestLegacyExternalStorage is enabled"
+    }
+  },
+  {
+    "id": "expo/android-network-security-config",
+    "severity": "low",
+    "title": "Android network security config referenced",
+    "description": "Review network security config for cleartext exceptions and trust anchors.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "networkSecurityConfig\\\"?\\s*:\\s*[^\\n]*@xml/",
+      "message": "android.networkSecurityConfig referenced"
+    }
+  },
+  {
+    "id": "expo/android-permission-camera",
+    "severity": "low",
+    "title": "Android CAMERA permission requested",
+    "description": "Requesting camera access increases privacy risk; ensure it is necessary and well scoped.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.CAMERA",
+      "message": "CAMERA permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-record-audio",
+    "severity": "low",
+    "title": "Android RECORD_AUDIO permission requested",
+    "description": "Requesting microphone access increases privacy risk; ensure it is necessary and well scoped.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.RECORD_AUDIO",
+      "message": "RECORD_AUDIO permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-read-sms",
+    "severity": "high",
+    "title": "Android READ_SMS permission requested",
+    "description": "SMS access is highly sensitive; avoid requesting READ_SMS unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.READ_SMS",
+      "message": "READ_SMS permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-send-sms",
+    "severity": "high",
+    "title": "Android SEND_SMS permission requested",
+    "description": "SMS sending can be abused for fraud; avoid requesting SEND_SMS unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.SEND_SMS",
+      "message": "SEND_SMS permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-read-contacts",
+    "severity": "medium",
+    "title": "Android READ_CONTACTS permission requested",
+    "description": "Contacts access is sensitive; ensure collection is necessary and minimized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.READ_CONTACTS",
+      "message": "READ_CONTACTS permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-write-contacts",
+    "severity": "medium",
+    "title": "Android WRITE_CONTACTS permission requested",
+    "description": "Writing contacts is sensitive; ensure it is necessary and properly disclosed.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.WRITE_CONTACTS",
+      "message": "WRITE_CONTACTS permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-access-fine-location",
+    "severity": "medium",
+    "title": "Android ACCESS_FINE_LOCATION permission requested",
+    "description": "Fine location is sensitive. Ensure collection is necessary and minimized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.ACCESS_FINE_LOCATION",
+      "message": "ACCESS_FINE_LOCATION permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-access-background-location",
+    "severity": "high",
+    "title": "Android ACCESS_BACKGROUND_LOCATION permission requested",
+    "description": "Background location is highly sensitive; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.ACCESS_BACKGROUND_LOCATION",
+      "message": "ACCESS_BACKGROUND_LOCATION permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-read-phone-state",
+    "severity": "medium",
+    "title": "Android READ_PHONE_STATE permission requested",
+    "description": "Phone state access can be sensitive; ensure it is necessary and minimized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.READ_PHONE_STATE",
+      "message": "READ_PHONE_STATE permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-read-call-log",
+    "severity": "high",
+    "title": "Android READ_CALL_LOG permission requested",
+    "description": "Call logs are highly sensitive; avoid requesting READ_CALL_LOG unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.READ_CALL_LOG",
+      "message": "READ_CALL_LOG permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-write-call-log",
+    "severity": "high",
+    "title": "Android WRITE_CALL_LOG permission requested",
+    "description": "Writing call logs is highly sensitive; avoid requesting WRITE_CALL_LOG unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.WRITE_CALL_LOG",
+      "message": "WRITE_CALL_LOG permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-manage-external-storage",
+    "severity": "high",
+    "title": "Android MANAGE_EXTERNAL_STORAGE permission requested",
+    "description": "All files access is highly sensitive and broad; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.MANAGE_EXTERNAL_STORAGE",
+      "message": "MANAGE_EXTERNAL_STORAGE permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-system-alert-window",
+    "severity": "high",
+    "title": "Android SYSTEM_ALERT_WINDOW permission requested",
+    "description": "Overlay permission can enable phishing and UI redress attacks; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.SYSTEM_ALERT_WINDOW",
+      "message": "SYSTEM_ALERT_WINDOW permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-request-install-packages",
+    "severity": "high",
+    "title": "Android REQUEST_INSTALL_PACKAGES permission requested",
+    "description": "Allowing package installs can enable sideloading and abuse; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.REQUEST_INSTALL_PACKAGES",
+      "message": "REQUEST_INSTALL_PACKAGES permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-package-usage-stats",
+    "severity": "high",
+    "title": "Android PACKAGE_USAGE_STATS permission requested",
+    "description": "Usage stats can reveal sensitive user behavior; avoid requesting unless strictly required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.PACKAGE_USAGE_STATS",
+      "message": "PACKAGE_USAGE_STATS permission requested"
+    }
+  },
+  {
+    "id": "expo/android-permission-bind-accessibility-service",
+    "severity": "high",
+    "title": "Android BIND_ACCESSIBILITY_SERVICE permission referenced",
+    "description": "Accessibility services can capture sensitive data; ensure appropriate justification and protections.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "android\\.permission\\.BIND_ACCESSIBILITY_SERVICE",
+      "message": "BIND_ACCESSIBILITY_SERVICE permission referenced"
+    }
+  },
+  {
+    "id": "expo/ios-ats-arbitrary-loads",
+    "severity": "high",
+    "title": "ATS allows arbitrary loads",
+    "description": "NSAllowsArbitraryLoads disables ATS protections and can permit insecure HTTP connections.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSAllowsArbitraryLoads\\\"?\\s*:\\s*true",
+      "message": "NSAllowsArbitraryLoads enabled"
+    }
+  },
+  {
+    "id": "expo/ios-ats-arbitrary-loads-in-webcontent",
+    "severity": "high",
+    "title": "ATS allows arbitrary loads in web content",
+    "description": "NSAllowsArbitraryLoadsInWebContent permits insecure loads inside WKWebView / embedded web content.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSAllowsArbitraryLoadsInWebContent\\\"?\\s*:\\s*true",
+      "message": "NSAllowsArbitraryLoadsInWebContent enabled"
+    }
+  },
+  {
+    "id": "expo/ios-ats-arbitrary-loads-for-media",
+    "severity": "medium",
+    "title": "ATS allows arbitrary loads for media",
+    "description": "NSAllowsArbitraryLoadsForMedia allows insecure media loads; review necessity.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSAllowsArbitraryLoadsForMedia\\\"?\\s*:\\s*true",
+      "message": "NSAllowsArbitraryLoadsForMedia enabled"
+    }
+  },
+  {
+    "id": "expo/ios-ats-arbitrary-loads-for-webcontent",
+    "severity": "medium",
+    "title": "ATS allows arbitrary loads for web content",
+    "description": "NSAllowsArbitraryLoadsForWebContent allows insecure web loads; review necessity.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSAllowsArbitraryLoadsForWebContent\\\"?\\s*:\\s*true",
+      "message": "NSAllowsArbitraryLoadsForWebContent enabled"
+    }
+  },
+  {
+    "id": "expo/ios-ats-exception-insecure-http-loads",
+    "severity": "high",
+    "title": "ATS exception allows insecure HTTP loads",
+    "description": "NSExceptionAllowsInsecureHTTPLoads allows non-TLS traffic for exception domains.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSExceptionAllowsInsecureHTTPLoads\\\"?\\s*:\\s*true",
+      "message": "NSExceptionAllowsInsecureHTTPLoads enabled"
+    }
+  },
+  {
+    "id": "expo/ios-ats-exception-minimum-tls-1-0",
+    "severity": "high",
+    "title": "ATS exception allows TLSv1.0",
+    "description": "Allowing TLSv1.0 weakens transport security; prefer TLS 1.2+.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSExceptionMinimumTLSVersion\\\"?\\s*:\\s*[^\\n]*TLSv1\\.0",
+      "message": "NSExceptionMinimumTLSVersion set to TLSv1.0"
+    }
+  },
+  {
+    "id": "expo/ios-allows-local-networking",
+    "severity": "low",
+    "title": "ATS allows local networking",
+    "description": "Allowing local networking may be intended, but review for exposure to untrusted networks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSAllowsLocalNetworking\\\"?\\s*:\\s*true",
+      "message": "NSAllowsLocalNetworking enabled"
+    }
+  },
+  {
+    "id": "expo/ios-ui-filesharing-enabled",
+    "severity": "medium",
+    "title": "iOS UIFileSharingEnabled enabled",
+    "description": "Enabling iTunes File Sharing can expose app documents to users and desktop access.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "UIFileSharingEnabled\\\"?\\s*:\\s*true",
+      "message": "UIFileSharingEnabled enabled"
+    }
+  },
+  {
+    "id": "expo/ios-documents-in-place",
+    "severity": "low",
+    "title": "iOS supports opening documents in place",
+    "description": "Opening documents in place can interact with external providers; review implications for sensitive files.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "LSSupportsOpeningDocumentsInPlace\\\"?\\s*:\\s*true",
+      "message": "LSSupportsOpeningDocumentsInPlace enabled"
+    }
+  },
+  {
+    "id": "expo/ios-get-task-allow-enabled",
+    "severity": "high",
+    "title": "iOS get-task-allow enabled",
+    "description": "get-task-allow enables debugging/attaching; ensure it is disabled for production builds.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "get-task-allow\\\"?\\s*:\\s*true",
+      "message": "get-task-allow is enabled"
+    }
+  },
+  {
+    "id": "expo/ios-associated-domains",
+    "severity": "low",
+    "title": "Associated domains configured",
+    "description": "Ensure associated domains are correct and validated to prevent deep link hijacking.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "com\\.apple\\.developer\\.associated-domains",
+      "message": "Associated domains entitlement referenced"
+    }
+  },
+  {
+    "id": "expo/ios-keychain-access-groups",
+    "severity": "medium",
+    "title": "iOS keychain access groups configured",
+    "description": "Review keychain access groups for unnecessary sharing between apps/extensions.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "keychain-access-groups",
+      "message": "keychain-access-groups referenced"
+    }
+  },
+  {
+    "id": "expo/ios-user-tracking-usage-description",
+    "severity": "medium",
+    "title": "NSUserTrackingUsageDescription present",
+    "description": "Tracking permission prompts indicate access to identifiers; ensure tracking is necessary and minimized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "NSUserTrackingUsageDescription",
+      "message": "NSUserTrackingUsageDescription present"
+    }
+  },
+  {
+    "id": "expo/updates-url-http",
+    "severity": "high",
+    "title": "Expo Updates URL uses http://",
+    "description": "Using http:// for update URLs can allow man-in-the-middle attacks. Prefer https://.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "updates[\\s\\S]*url[\\s\\S]*http://",
+      "flags": "s",
+      "message": "updates.url appears to use http://"
+    }
+  },
+  {
+    "id": "expo/updates-fallback-cache-timeout-zero",
+    "severity": "low",
+    "title": "Expo Updates fallbackToCacheTimeout is 0",
+    "description": "A zero cache timeout can increase reliance on network fetches for updates; review for availability and integrity needs.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "fallbackToCacheTimeout\\\"?\\s*:\\s*0",
+      "message": "fallbackToCacheTimeout is set to 0"
+    }
+  },
+  {
+    "id": "expo/extra-contains-secret",
+    "severity": "high",
+    "title": "Potential secret stored in app config extra",
+    "description": "Values under expo.extra can be bundled into the app. Avoid embedding secrets in app config.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "\\b(extra)[\\s\\S]*\\b(secret|token|password)\\b",
+      "flags": "is",
+      "message": "expo.extra appears to contain secret-like keys"
+    }
+  },
+  {
+    "id": "expo/scheme-http",
+    "severity": "medium",
+    "title": "App scheme set to http",
+    "description": "Using http as an app scheme can collide with normal web URLs and may enable unexpected deep link handling.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "scheme\\\"?\\s*:\\s*\"http\"",
+      "message": "App scheme is set to http"
+    }
+  },
+  {
+    "id": "expo/android-intentfilter-host-wildcard",
+    "severity": "high",
+    "title": "Android intent filter host wildcard",
+    "description": "Using a wildcard host in intent filters can route unexpected URLs into the app. Restrict to known hosts.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "host\\\"?\\s*:\\s*\"\\*\"",
+      "message": "Android intent filter host appears to be a wildcard"
+    }
+  },
+  {
+    "id": "expo/android-intentfilter-autoverify",
+    "severity": "low",
+    "title": "Android intent filter autoVerify enabled",
+    "description": "autoVerify is normally used for verified links. Ensure the associated domains are correct and controlled.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "autoVerify\\\"?\\s*:\\s*true",
+      "message": "Android intent filter autoVerify is enabled"
+    }
+  },
+  {
+    "id": "expo/ios-associated-domains-wildcard",
+    "severity": "high",
+    "title": "iOS associated domains wildcard",
+    "description": "Wildcard associated domains can enable deep link hijacking. Prefer explicit domains.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/app.json"],
+      "pattern": "applinks:\\*",
+      "message": "Associated domains includes applinks:*"
+    }
+  },
+  {
+    "id": "expo/eas-production-development-client",
+    "severity": "high",
+    "title": "EAS production build enables developmentClient",
+    "description": "Shipping a development client can expose debugging and introspection capabilities.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "\"production\"[\\s\\S]*developmentClient\\\"?\\s*:\\s*true",
+      "flags": "s",
+      "message": "developmentClient: true under production build"
+    }
+  },
+  {
+    "id": "expo/eas-production-distribution-internal",
+    "severity": "medium",
+    "title": "EAS production build distribution is internal",
+    "description": "Internal distributions can bypass store review and may be used for broad internal release; ensure it is intended.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "\"production\"[\\s\\S]*distribution\\\"?\\s*:\\s*\"internal\"",
+      "flags": "s",
+      "message": "distribution: internal under production build"
+    }
+  },
+  {
+    "id": "expo/eas-credentials-source-local",
+    "severity": "medium",
+    "title": "EAS credentialsSource is local",
+    "description": "Local credentials can increase risk of secret leakage through repositories and developer machines.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "credentialsSource\\\"?\\s*:\\s*\"local\"",
+      "message": "credentialsSource is set to local"
+    }
+  },
+  {
+    "id": "expo/eas-android-buildtype-apk",
+    "severity": "low",
+    "title": "EAS Android buildType is apk",
+    "description": "APK distributions are easier to sideload than AAB; ensure this is intended for your release model.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "buildType\\\"?\\s*:\\s*\"apk\"",
+      "message": "Android buildType is set to apk"
+    }
+  },
+  {
+    "id": "expo/eas-ios-simulator-build",
+    "severity": "low",
+    "title": "EAS iOS simulator build enabled",
+    "description": "Simulator builds can be appropriate for testing; ensure simulator settings are not used for production distribution.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "simulator\\\"?\\s*:\\s*true",
+      "message": "iOS simulator build enabled"
+    }
+  },
+  {
+    "id": "expo/eas-env-openai-api-key",
+    "severity": "high",
+    "title": "OPENAI_API_KEY set in EAS env",
+    "description": "API keys should be handled carefully; ensure they are not leaked through logs or client bundles.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "OPENAI_API_KEY",
+      "message": "OPENAI_API_KEY appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-sentry-auth-token",
+    "severity": "medium",
+    "title": "SENTRY_AUTH_TOKEN set in EAS env",
+    "description": "Sentry auth tokens are sensitive and should be protected.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "SENTRY_AUTH_TOKEN",
+      "message": "SENTRY_AUTH_TOKEN appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-google-services-json",
+    "severity": "medium",
+    "title": "GOOGLE_SERVICES_JSON set in EAS env",
+    "description": "Google services configuration can include identifiers and should be handled carefully.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "GOOGLE_SERVICES_JSON",
+      "message": "GOOGLE_SERVICES_JSON appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-stripe-secret-key",
+    "severity": "high",
+    "title": "STRIPE_SECRET_KEY set in EAS env",
+    "description": "Stripe secret keys must never be shipped to clients; ensure server-side usage only.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "STRIPE_SECRET_KEY",
+      "message": "STRIPE_SECRET_KEY appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-aws-access-key-id",
+    "severity": "high",
+    "title": "AWS_ACCESS_KEY_ID set in EAS env",
+    "description": "AWS credentials should be protected and rotated if exposed.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "AWS_ACCESS_KEY_ID",
+      "message": "AWS_ACCESS_KEY_ID appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-aws-secret-access-key",
+    "severity": "high",
+    "title": "AWS_SECRET_ACCESS_KEY set in EAS env",
+    "description": "AWS credentials should be protected and rotated if exposed.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "AWS_SECRET_ACCESS_KEY",
+      "message": "AWS_SECRET_ACCESS_KEY appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-database-url",
+    "severity": "high",
+    "title": "DATABASE_URL set in EAS env",
+    "description": "Database URLs can include credentials; ensure they are not exposed in client bundles.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "DATABASE_URL",
+      "message": "DATABASE_URL appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-jwt-secret",
+    "severity": "high",
+    "title": "JWT_SECRET set in EAS env",
+    "description": "JWT signing secrets must remain server-side and protected.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "JWT_SECRET",
+      "message": "JWT_SECRET appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-private-key",
+    "severity": "high",
+    "title": "PRIVATE_KEY set in EAS env",
+    "description": "Private key material must be protected; ensure it is not committed and is stored securely.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "\\bPRIVATE_KEY\\b",
+      "message": "PRIVATE_KEY appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/eas-env-firebase-private-key",
+    "severity": "high",
+    "title": "FIREBASE_PRIVATE_KEY set in EAS env",
+    "description": "Firebase service account keys should be protected and rotated if exposed.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/eas.json"],
+      "pattern": "FIREBASE_PRIVATE_KEY",
+      "message": "FIREBASE_PRIVATE_KEY appears in eas.json env"
+    }
+  },
+  {
+    "id": "expo/asyncstorage-token-key",
+    "severity": "high",
+    "title": "AsyncStorage stores auth token",
+    "description": "Storing authentication tokens in AsyncStorage is not encrypted by default.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "AsyncStorage\\.setItem\\s*\\(\\s*['\\\"](auth_)?token['\\\"]",
+      "message": "AsyncStorage.setItem() called with token key"
+    }
+  },
+  {
+    "id": "expo/insecure-storage-asyncstorage-setitem",
+    "severity": "medium",
+    "title": "AsyncStorage used to store data",
+    "description": "AsyncStorage is not encrypted by default; avoid storing secrets or tokens in plaintext.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "AsyncStorage\\.setItem\\s*\\(",
+      "message": "AsyncStorage.setItem() detected"
+    }
+  },
+  {
+    "id": "expo/insecure-deeplink-getinitialurl",
+    "severity": "medium",
+    "title": "Deep link URL retrieved",
+    "description": "Deep link URLs should be validated before use to prevent navigation to untrusted destinations.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Linking\\.getInitialURL\\s*\\(",
+      "message": "Linking.getInitialURL() detected"
+    }
+  },
+  {
+    "id": "expo/insecure-deeplink-openurl",
+    "severity": "medium",
+    "title": "Deep link URL opened",
+    "description": "Opening URLs should be restricted/validated to avoid navigation to untrusted destinations.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Linking\\.openURL\\s*\\(",
+      "message": "Linking.openURL() detected"
+    }
+  },
+  {
+    "id": "expo/webbrowser-openbrowserasync",
+    "severity": "low",
+    "title": "External browser opened",
+    "description": "Opening external URLs can be abused for phishing if destinations are not validated.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "WebBrowser\\.openBrowserAsync\\s*\\(",
+      "message": "WebBrowser.openBrowserAsync() detected"
+    }
+  },
+  {
+    "id": "expo/insecure-http-fetch",
+    "severity": "high",
+    "title": "HTTP request via fetch",
+    "description": "Using http:// in network requests can expose traffic to interception.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "fetch\\s*\\(\\s*['\\\"]http://",
+      "message": "fetch() called with http:// URL"
+    }
+  },
+  {
+    "id": "expo/insecure-logging-secrets",
+    "severity": "medium",
+    "title": "Potential secret logged",
+    "description": "Logging secrets (tokens/passwords) can leak sensitive data to logs and third-party crash reporters.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "console\\.log\\([^\\n]*(token|password|secret)",
+      "message": "console.log with potential secret keyword"
+    }
+  },
+  {
+    "id": "expo/insecure-crypto-random-by-math",
+    "severity": "low",
+    "title": "Non-cryptographic random referenced",
+    "description": "Avoid using Math.random for secrets, tokens, or identifiers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "Math\\.random\\s*\\(",
+      "message": "Math.random() detected"
+    }
+  },
+  {
+    "id": "expo/expo-push-token",
+    "severity": "medium",
+    "title": "Expo push token retrieved",
+    "description": "Push tokens can be used to target devices; treat them as sensitive identifiers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.{js,jsx,ts,tsx}"],
+      "pattern": "getExpoPushTokenAsync",
+      "message": "getExpoPushTokenAsync usage detected"
+    }
+  }
+]

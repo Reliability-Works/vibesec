@@ -157,8 +157,12 @@ async function loadRulesForFrameworks(frameworks: FrameworkDetection[]): Promise
     rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-nextjs')))
   }
 
-  if (ids.has('react-native') || ids.has('expo')) {
+  if (ids.has('react-native')) {
     rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-react-native')))
+  }
+
+  if (ids.has('expo')) {
+    rules.push(...(await loadRulesetRules('@reliabilityworks/ruleset-expo')))
   }
 
   if (ids.has('express')) {

@@ -1,5 +1,69 @@
 {
   "expo": {
-    "name": "Expo App"
+    "name": "Expo App",
+    "scheme": "http",
+    "extra": {
+      "secret": "REDACTED_SECRET",
+      "token": "REDACTED_TOKEN"
+    },
+    "updates": {
+      "url": "http://updates.example.com",
+      "fallbackToCacheTimeout": 0
+    },
+    "android": {
+      "usesCleartextTraffic": true,
+      "allowBackup": true,
+      "requestLegacyExternalStorage": true,
+      "networkSecurityConfig": "@xml/network_security_config",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_SMS",
+        "android.permission.SEND_SMS",
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.READ_PHONE_STATE",
+        "android.permission.READ_CALL_LOG",
+        "android.permission.WRITE_CALL_LOG",
+        "android.permission.MANAGE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.REQUEST_INSTALL_PACKAGES",
+        "android.permission.PACKAGE_USAGE_STATS",
+        "android.permission.BIND_ACCESSIBILITY_SERVICE"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "ios": {
+      "infoPlist": {
+        "NSAllowsArbitraryLoads": true,
+        "NSAllowsArbitraryLoadsInWebContent": true,
+        "NSAllowsArbitraryLoadsForMedia": true,
+        "NSAllowsArbitraryLoadsForWebContent": true,
+        "NSExceptionAllowsInsecureHTTPLoads": true,
+        "NSExceptionMinimumTLSVersion": "TLSv1.0",
+        "NSAllowsLocalNetworking": true,
+        "UIFileSharingEnabled": true,
+        "LSSupportsOpeningDocumentsInPlace": true,
+        "get-task-allow": true,
+        "com.apple.developer.associated-domains": ["applinks:*"],
+        "keychain-access-groups": ["group.example.shared"],
+        "NSUserTrackingUsageDescription": "We track for analytics."
+      }
+    }
   }
 }

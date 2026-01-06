@@ -15,6 +15,7 @@
     "@reliabilityworks/analyzer-javascript": "workspace:*",
     "@reliabilityworks/ruleset-nextjs": "workspace:*",
     "@reliabilityworks/ruleset-react-native": "workspace:*",
+    "@reliabilityworks/ruleset-expo": "workspace:*",
     "@reliabilityworks/ruleset-express": "workspace:*",
     "@reliabilityworks/ruleset-sveltekit": "workspace:*",
     "@reliabilityworks/ruleset-astro": "workspace:*",

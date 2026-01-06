@@ -1,0 +1,27 @@
+{
+  "build": {
+    "production": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "credentialsSource": "local",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "OPENAI_API_KEY": "REDACTED",
+        "SENTRY_AUTH_TOKEN": "REDACTED",
+        "GOOGLE_SERVICES_JSON": "REDACTED",
+        "STRIPE_SECRET_KEY": "REDACTED",
+        "AWS_ACCESS_KEY_ID": "REDACTED",
+        "AWS_SECRET_ACCESS_KEY": "REDACTED",
+        "DATABASE_URL": "postgres://example:example@localhost:5432/example",
+        "JWT_SECRET": "REDACTED",
+        "PRIVATE_KEY": "REDACTED_PRIVATE_KEY",
+        "FIREBASE_PRIVATE_KEY": "REDACTED_FIREBASE_PRIVATE_KEY"
+      }
+    }
+  }
+}

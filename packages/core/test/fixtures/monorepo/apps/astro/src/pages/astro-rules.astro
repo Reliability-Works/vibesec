@@ -1,0 +1,75 @@
+---
+const a = "document.cookie"
+const b = "response.headers.set('Location', '/login')"
+const c = "Authorization: Basic dXNlcjpwYXNz"
+const d = "Authorization: Bearer not-a-real-token"
+const e = "Astro.url.searchParams.get('next')"
+const f = "Astro.cookies.get('sid')"
+const g = "Astro.cookies.set('sid', '1')"
+const h = "Astro.redirect('/login')"
+const i = "/graphql"
+const j = "eval(\"alert(1)\")"
+const k = "new Function('return 1')"
+const l = "insertAdjacentHTML('<div>')"
+const m = "document.write('<div>')"
+const n = "parseFromString('<div>')"
+const o = "localStorage"
+const p = "sessionStorage"
+const q = "addEventListener('message'"
+const r = ".postMessage('hello')"
+const s = "fetch('http://example.com')"
+const t = "el.innerHTML = '<div>unsafe</div>'"
+---
+
+<head>
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="script-src 'unsafe-inline' 'unsafe-eval' http://example.com"
+  />
+  <meta http-equiv="refresh" content="0;url=http://example.com" />
+</head>
+
+<div
+  style="color: red"
+  onclick="alert(1)"
+  onerror="alert(1)"
+  onload="alert(1)"
+  onmouseover="1"
+  onfocus="1"
+  onblur="1"
+  onchange="1"
+  onsubmit="1"
+  onkeyup="1"
+  onkeydown="1"
+  onkeypress="1"
+  onmouseenter="1"
+  onmouseleave="1"
+></div>
+
+<a href="javascript:alert(1)" target="_blank" referrerpolicy="unsafe-url">x</a>
+
+<img src="http://example.com/x.png" onerror="alert(1)" />
+<img src="data:image/svg+xml,<svg onload=alert(1)></svg>" />
+
+<iframe src="http://example.com"></iframe>
+<iframe
+  src="http://example.com"
+  srcdoc="<img src=x onerror=alert(1)>"
+  sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-forms"
+></iframe>
+
+<object data="http://example.com"></object>
+<embed src="http://example.com"></embed>
+
+<svg></svg>
+<math></math>
+
+<script src="http://example.com/app.js"></script>
+<script src="data:text/javascript,alert(1)"></script>
+<link rel="stylesheet" href="http://example.com/app.css" />
+
+<video src="http://example.com/v.mp4"></video>
+<audio src="http://example.com/a.mp3"></audio>
+
+<input type="password" />
+<input type="file" />

@@ -43,10 +43,10 @@ vibesec scan .
 
 ## GitHub Action
 
-Until public release, pin to a pre-release tag (e.g. `v0.1.0-alpha.1`) or a commit SHA.
+Use the moving major tag to stay on the latest stable release:
 
 ```yaml
-- uses: Reliability-Works/vibesec@v0.1.0-alpha.1
+- uses: Reliability-Works/vibesec@v1
   with:
     path: .
     framework: auto
@@ -55,11 +55,15 @@ Until public release, pin to a pre-release tag (e.g. `v0.1.0-alpha.1`) or a comm
     fail-on: high
 ```
 
+If you need fully reproducible builds, pin to a specific version tag (e.g. `v1.0.0`) or a commit SHA.
+
 ## Docker
 
 - Build locally: `docker build -t vibesec -f docker/Dockerfile .`
 - Run: `docker run --rm -v "$PWD:/repo" -w /repo vibesec scan .`
-- Pull from GHCR (tagged builds only): `docker pull ghcr.io/reliability-works/vibesec:v0.1.0-alpha.1`
+- Pull from GHCR: `docker pull ghcr.io/reliability-works/vibesec:latest`
+
+If you need fully reproducible builds, pin to a specific version tag (e.g. `ghcr.io/reliability-works/vibesec:v1.0.0`).
 
 ## Config
 

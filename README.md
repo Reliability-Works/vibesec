@@ -2,6 +2,15 @@
 
 Local-first security scanner for modern app frameworks.
 
+## Supported frameworks
+
+- Next.js (`nextjs`)
+- React Native (`react-native`)
+- Expo (`expo`)
+- Express (`express`)
+- SvelteKit (`sveltekit`)
+- Astro (`astro`)
+
 ## Installation
 
 ### Global installation (recommended)
@@ -41,6 +50,13 @@ vibesec scan .
 - Build: `pnpm build`
 - Scan: `node packages/cli/dist/cli.js scan .`
 
+## Output formats
+
+- `cli`: human-readable output (default)
+- `json`: machine-readable output for tooling
+- `sarif`: GitHub Code Scanning compatible output
+- `html`: local report
+
 ## GitHub Action
 
 Use the moving major tag to stay on the latest stable release:
@@ -56,6 +72,29 @@ Use the moving major tag to stay on the latest stable release:
 ```
 
 If you need fully reproducible builds, pin to a specific version tag (e.g. `v1.0.0`) or a commit SHA.
+
+To publish SARIF results to GitHub Code Scanning, add an upload step:
+
+```yaml
+permissions:
+  contents: read
+  security-events: write
+
+steps:
+  - uses: actions/checkout@v4
+
+  - uses: Reliability-Works/vibesec@v1
+    with:
+      path: .
+      output: sarif
+      out-file: vibesec.sarif
+
+  - uses: github/codeql-action/upload-sarif@v3
+    with:
+      sarif_file: vibesec.sarif
+```
+
+Note: `@v1` tracks the latest stable `1.x`. If you prefer always using the newest commit, use `@main`.
 
 ## Docker
 

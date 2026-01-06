@@ -11,6 +11,10 @@ Local-first security scanner for modern app frameworks.
 - SvelteKit (`sveltekit`)
 - Astro (`astro`)
 
+## Docs
+
+https://www.vibesec.network/docs
+
 ## Installation
 
 ### Global installation (recommended)

@@ -9,7 +9,9 @@ export const BUILTIN_RULES: Rule[] = [
     matcher: {
       type: 'file_presence',
       paths: ['.env', '.env.*'],
-      message: 'Environment file present in repository',
+      excludePaths: ['.env.example'],
+      trackedOnly: true,
+      message: 'Environment file tracked by git',
     },
   },
   {

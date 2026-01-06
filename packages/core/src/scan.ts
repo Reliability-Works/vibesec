@@ -1,6 +1,8 @@
 import crypto from 'node:crypto'
+import { execFile } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { promisify } from 'node:util'
 
 import fg from 'fast-glob'
 import picomatch from 'picomatch'
@@ -34,6 +36,8 @@ const DEFAULT_IGNORES = [
 ]
 
 const DEFAULT_MAX_FILE_SIZE_BYTES = 1024 * 1024
+
+const execFileAsync = promisify(execFile)
 
 export type SeverityNameInput = SeverityName
 
@@ -178,6 +182,8 @@ const ruleSchema: z.ZodType<Rule> = z.object({
     z.object({
       type: z.literal('file_presence'),
       paths: z.array(z.string().min(1)).min(1),
+      excludePaths: z.array(z.string().min(1)).min(1).optional(),
+      trackedOnly: z.boolean().optional(),
       message: z.string().min(1),
     }),
     z.object({
@@ -238,6 +244,45 @@ function isIgnored(config: VibeSecConfig, finding: Finding): boolean {
   }
 
   return false
+}
+
+async function listGitTrackedFiles(rootDir: string): Promise<string[] | null> {
+  try {
+    const { stdout: repoRootStdout } = await execFileAsync(
+      'git',
+      ['rev-parse', '--show-toplevel'],
+      {
+        cwd: rootDir,
+        maxBuffer: 1024 * 1024,
+        encoding: 'utf8',
+      },
+    )
+
+    const repoRoot = await fs.realpath(repoRootStdout.trim())
+    const rootDirReal = await fs.realpath(rootDir)
+
+    const relativeRootDir = path.relative(repoRoot, rootDirReal).replaceAll('\\', '/')
+    if (relativeRootDir.startsWith('..')) return null
+
+    const pathspec = relativeRootDir ? [relativeRootDir] : []
+    const { stdout } = await execFileAsync('git', ['ls-files', '-z', '--', ...pathspec], {
+      cwd: repoRoot,
+      maxBuffer: 10 * 1024 * 1024,
+      encoding: 'utf8',
+    })
+
+    const files = stdout
+      .split('\0')
+      .filter(Boolean)
+      .map((p) => p.replaceAll('\\', '/'))
+
+    if (!relativeRootDir) return files
+
+    const prefix = relativeRootDir.replace(/\/?$/, '/')
+    return files.filter((p) => p.startsWith(prefix)).map((p) => p.slice(prefix.length))
+  } catch {
+    return null
+  }
 }
 
 async function listProjectFiles(rootDir: string): Promise<string[]> {
@@ -317,6 +362,11 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
 
   const frameworks = options.frameworks ?? (await detectFrameworks(scanDir))
   const files = await listProjectFiles(scanDir)
+  const trackedFiles = rules.some(
+    (r) => r.matcher.type === 'file_presence' && r.matcher.trackedOnly,
+  )
+    ? await listGitTrackedFiles(scanDir)
+    : null
 
   const toBasePath = (scanRelativePath: string): string => {
     const absolutePath = path.join(scanDir, scanRelativePath)
@@ -329,7 +379,17 @@ export async function scanProject(options: ScanOptions): Promise<ScanResult> {
 
   for (const rule of rules) {
     if (rule.matcher.type === 'file_presence') {
-      const matches = files.filter(picomatch(rule.matcher.paths, { dot: true }))
+      const candidateFiles = rule.matcher.trackedOnly ? (trackedFiles ?? []) : files
+
+      const matchesPaths = picomatch(rule.matcher.paths, { dot: true })
+      const matchesExclude = rule.matcher.excludePaths
+        ? picomatch(rule.matcher.excludePaths, { dot: true })
+        : null
+
+      const matches = candidateFiles.filter(
+        (p) => matchesPaths(p) && !(matchesExclude?.(p) ?? false),
+      )
+
       for (const relativePath of matches) {
         const finding = makeFinding({
           rule,

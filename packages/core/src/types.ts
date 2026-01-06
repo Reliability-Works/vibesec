@@ -70,6 +70,8 @@ export type FilePresenceMatcher = {
   type: 'file_presence'
   paths: string[]
   message: string
+  trackedOnly?: boolean
+  excludePaths?: string[]
 }
 
 export type RegexMatcher = {

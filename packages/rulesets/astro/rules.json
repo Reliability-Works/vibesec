@@ -22,5 +22,797 @@
       "pattern": "\\bis:inline\\b",
       "message": "Inline script detected; prefer external scripts and CSP"
     }
+  },
+  {
+    "id": "astro/inline-style",
+    "severity": "low",
+    "title": "Inline style usage",
+    "description": "Inline styles complicate CSP and can increase injection risk when combined with untrusted data.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bstyle=\\\"",
+      "message": "Inline style attribute detected"
+    }
+  },
+  {
+    "id": "astro/inline-event-handler",
+    "severity": "high",
+    "title": "Inline DOM event handler",
+    "description": "Inline event handlers (onclick/onerror/...) are a common XSS sink and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bon[a-zA-Z]+\\s*=",
+      "message": "Inline event handler attribute detected"
+    }
+  },
+  {
+    "id": "astro/onerror-handler",
+    "severity": "high",
+    "title": "onerror handler present",
+    "description": "onerror handlers can execute arbitrary JS when resources fail to load.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonerror\\s*=",
+      "message": "onerror handler detected"
+    }
+  },
+  {
+    "id": "astro/onclick-handler",
+    "severity": "medium",
+    "title": "onclick handler present",
+    "description": "Inline onclick handlers can enable XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonclick\\s*=",
+      "message": "onclick handler detected"
+    }
+  },
+  {
+    "id": "astro/onload-handler",
+    "severity": "medium",
+    "title": "onload handler present",
+    "description": "Inline onload handlers can execute JS automatically when elements load.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonload\\s*=",
+      "message": "onload handler detected"
+    }
+  },
+  {
+    "id": "astro/javascript-url",
+    "severity": "high",
+    "title": "javascript: URL usage",
+    "description": "javascript: URLs can execute script in the browser and are a common XSS vector.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bjavascript:",
+      "message": "javascript: URL detected"
+    }
+  },
+  {
+    "id": "astro/data-url",
+    "severity": "medium",
+    "title": "data: URL usage",
+    "description": "data: URLs can embed content directly. Be careful when values can be influenced by untrusted input.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bdata:",
+      "message": "data: URL detected"
+    }
+  },
+  {
+    "id": "astro/http-url",
+    "severity": "high",
+    "title": "Insecure http:// URL usage",
+    "description": "Using http:// can expose traffic to interception. Prefer https://.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bhttp://",
+      "message": "http:// URL detected"
+    }
+  },
+  {
+    "id": "astro/iframe-present",
+    "severity": "low",
+    "title": "iframe embedded",
+    "description": "iframes can introduce clickjacking or untrusted content risks depending on source and sandboxing.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<iframe\\b",
+      "message": "iframe tag detected"
+    }
+  },
+  {
+    "id": "astro/iframe-no-sandbox",
+    "severity": "high",
+    "title": "iframe without sandbox",
+    "description": "Unsandboxed iframes can run scripts and navigate the top-level page depending on origin.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<iframe\\b(?![^>]*\\bsandbox=)",
+      "message": "iframe without sandbox detected"
+    }
+  },
+  {
+    "id": "astro/iframe-allow-scripts",
+    "severity": "medium",
+    "title": "iframe sandbox allows scripts",
+    "description": "sandbox=allow-scripts enables script execution inside the iframe. Validate content is trusted.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsandbox=\\\"[^\\\"]*allow-scripts",
+      "message": "iframe sandbox allows scripts"
+    }
+  },
+  {
+    "id": "astro/iframe-allow-same-origin",
+    "severity": "medium",
+    "title": "iframe sandbox allows same-origin",
+    "description": "sandbox=allow-same-origin can reduce sandbox isolation. Validate content is trusted.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsandbox=\\\"[^\\\"]*allow-same-origin",
+      "message": "iframe sandbox allows same-origin"
+    }
+  },
+  {
+    "id": "astro/iframe-allow-popups",
+    "severity": "low",
+    "title": "iframe sandbox allows popups",
+    "description": "allow-popups can allow the iframe to open new windows; review risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsandbox=\\\"[^\\\"]*allow-popups",
+      "message": "iframe sandbox allows popups"
+    }
+  },
+  {
+    "id": "astro/iframe-srcdoc",
+    "severity": "high",
+    "title": "iframe srcdoc used",
+    "description": "srcdoc embeds HTML directly and is an XSS sink if content can be influenced by untrusted input.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsrcdoc=",
+      "message": "iframe srcdoc detected"
+    }
+  },
+  {
+    "id": "astro/meta-refresh",
+    "severity": "medium",
+    "title": "Meta refresh redirect",
+    "description": "Meta refresh can be abused for phishing/redirects. Prefer server-side redirects.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<meta\\s+http-equiv=\\\"refresh\\\"",
+      "message": "meta refresh detected"
+    }
+  },
+  {
+    "id": "astro/meta-csp-present",
+    "severity": "low",
+    "title": "CSP meta tag present",
+    "description": "CSP via meta can help reduce XSS but is less flexible than response headers.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<meta\\s+http-equiv=\\\"Content-Security-Policy\\\"",
+      "message": "CSP meta tag detected"
+    }
+  },
+  {
+    "id": "astro/csp-unsafe-inline",
+    "severity": "high",
+    "title": "CSP allows unsafe-inline",
+    "description": "unsafe-inline weakens CSP and can permit inline script/style execution.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "unsafe-inline",
+      "message": "CSP contains unsafe-inline"
+    }
+  },
+  {
+    "id": "astro/csp-unsafe-eval",
+    "severity": "high",
+    "title": "CSP allows unsafe-eval",
+    "description": "unsafe-eval allows eval() and similar sinks, weakening CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "unsafe-eval",
+      "message": "CSP contains unsafe-eval"
+    }
+  },
+  {
+    "id": "astro/window-message-listener",
+    "severity": "medium",
+    "title": "window message listener",
+    "description": "window.addEventListener('message') requires origin validation to avoid message spoofing.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "addEventListener\\s*\\(\\s*['\\\"]message['\\\"]",
+      "message": "message event listener detected"
+    }
+  },
+  {
+    "id": "astro/postmessage-usage",
+    "severity": "low",
+    "title": "postMessage usage",
+    "description": "postMessage requires strict origin checks when receiving messages.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\.postMessage\\s*\\(",
+      "message": "postMessage() usage detected"
+    }
+  },
+  {
+    "id": "astro/localstorage-usage",
+    "severity": "medium",
+    "title": "localStorage usage",
+    "description": "localStorage is accessible to JS and can leak secrets if XSS occurs.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\blocalStorage\\b",
+      "message": "localStorage referenced"
+    }
+  },
+  {
+    "id": "astro/sessionstorage-usage",
+    "severity": "low",
+    "title": "sessionStorage usage",
+    "description": "sessionStorage is accessible to JS and can leak data if XSS occurs.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsessionStorage\\b",
+      "message": "sessionStorage referenced"
+    }
+  },
+  {
+    "id": "astro/document-cookie",
+    "severity": "medium",
+    "title": "document.cookie usage",
+    "description": "Accessing document.cookie can lead to cookie leakage and suggests cookies may be readable by JS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "document\\.cookie",
+      "message": "document.cookie referenced"
+    }
+  },
+  {
+    "id": "astro/dangerous-dom-innerhtml",
+    "severity": "high",
+    "title": "innerHTML assignment",
+    "description": "Assigning to innerHTML is an XSS sink if content can be influenced by untrusted input.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\.innerHTML\\s*=",
+      "message": "innerHTML assignment detected"
+    }
+  },
+  {
+    "id": "astro/dangerous-insertadjacenthtml",
+    "severity": "high",
+    "title": "insertAdjacentHTML usage",
+    "description": "insertAdjacentHTML is an XSS sink if content can be influenced by untrusted input.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "insertAdjacentHTML\\s*\\(",
+      "message": "insertAdjacentHTML usage detected"
+    }
+  },
+  {
+    "id": "astro/dangerous-document-write",
+    "severity": "high",
+    "title": "document.write usage",
+    "description": "document.write can inject HTML and is commonly unsafe.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "document\\.write\\s*\\(",
+      "message": "document.write usage detected"
+    }
+  },
+  {
+    "id": "astro/eval-usage",
+    "severity": "high",
+    "title": "eval() usage",
+    "description": "eval() is a dangerous sink and can enable code injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\beval\\s*\\(",
+      "message": "eval() usage detected"
+    }
+  },
+  {
+    "id": "astro/function-constructor",
+    "severity": "high",
+    "title": "Function constructor usage",
+    "description": "new Function() is similar to eval() and can enable code injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "new\\s+Function\\s*\\(",
+      "message": "Function constructor usage detected"
+    }
+  },
+  {
+    "id": "astro/domparser-parsefromstring",
+    "severity": "medium",
+    "title": "DOMParser.parseFromString usage",
+    "description": "Parsing HTML from strings can introduce injection risks if input is untrusted.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "parseFromString\\s*\\(",
+      "message": "DOMParser.parseFromString detected"
+    }
+  },
+  {
+    "id": "astro/unsafe-redirect-location",
+    "severity": "medium",
+    "title": "Potential open redirect",
+    "description": "Redirecting based on untrusted input can enable open redirect attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "response\\.headers\\.set\\s*\\(\\s*['\\\"]Location['\\\"]",
+      "message": "Location header set detected"
+    }
+  },
+  {
+    "id": "astro/fetch-remote",
+    "severity": "medium",
+    "title": "Server fetch of remote URL",
+    "description": "Fetching remote URLs on the server can enable SSRF if the URL is influenced by untrusted input.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bfetch\\s*\\(",
+      "message": "fetch() usage detected"
+    }
+  },
+  {
+    "id": "astro/unsafe-graphql-endpoint",
+    "severity": "low",
+    "title": "GraphQL endpoint referenced",
+    "description": "Ensure GraphQL endpoints are protected (auth, depth limits, rate limiting).",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\/graphql\\b",
+      "message": "GraphQL endpoint reference detected"
+    }
+  },
+  {
+    "id": "astro/script-src-http",
+    "severity": "high",
+    "title": "Script loaded over HTTP",
+    "description": "Loading scripts over http:// can enable injection via MITM. Prefer https://.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<script[^>]*\\bsrc=\\\"http://",
+      "message": "script src uses http://"
+    }
+  },
+  {
+    "id": "astro/script-src-data",
+    "severity": "medium",
+    "title": "Script loaded from data: URL",
+    "description": "data: scripts complicate CSP and can be abused for injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<script[^>]*\\bsrc=\\\"data:",
+      "message": "script src uses data:"
+    }
+  },
+  {
+    "id": "astro/link-stylesheet-http",
+    "severity": "medium",
+    "title": "Stylesheet loaded over HTTP",
+    "description": "Loading CSS over http:// can enable UI redress or data exfiltration via CSS injection.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<link[^>]*rel=\\\"stylesheet\\\"[^>]*href=\\\"http://",
+      "message": "stylesheet href uses http://"
+    }
+  },
+  {
+    "id": "astro/img-src-http",
+    "severity": "low",
+    "title": "Image loaded over HTTP",
+    "description": "Loading images over http:// can leak browsing behavior and enables tampering.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<img[^>]*\\bsrc=\\\"http://",
+      "message": "img src uses http://"
+    }
+  },
+  {
+    "id": "astro/img-src-data",
+    "severity": "low",
+    "title": "Image loaded from data: URL",
+    "description": "data: images can embed executable SVG or unexpected content; validate sources.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<img[^>]*\\bsrc=\\\"data:",
+      "message": "img src uses data:"
+    }
+  },
+  {
+    "id": "astro/video-src-http",
+    "severity": "low",
+    "title": "Video loaded over HTTP",
+    "description": "Loading media over http:// can leak browsing behavior and enables tampering.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<video[^>]*\\bsrc=\\\"http://",
+      "message": "video src uses http://"
+    }
+  },
+  {
+    "id": "astro/audio-src-http",
+    "severity": "low",
+    "title": "Audio loaded over HTTP",
+    "description": "Loading media over http:// can leak browsing behavior and enables tampering.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<audio[^>]*\\bsrc=\\\"http://",
+      "message": "audio src uses http://"
+    }
+  },
+  {
+    "id": "astro/anchor-target-blank",
+    "severity": "medium",
+    "title": "target=_blank link",
+    "description": "Links opened in a new tab can be vulnerable to reverse tabnabbing unless rel=\"noopener\" is used.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "target=\\\"_blank\\\"",
+      "message": "target=\"_blank\" detected"
+    }
+  },
+  {
+    "id": "astro/referrerpolicy-unsafe-url",
+    "severity": "medium",
+    "title": "referrerpolicy unsafe-url",
+    "description": "referrerpolicy=unsafe-url can leak full URLs (including query params) to third parties.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "referrerpolicy=\\\"unsafe-url\\\"",
+      "message": "referrerpolicy=\"unsafe-url\" detected"
+    }
+  },
+  {
+    "id": "astro/input-type-password",
+    "severity": "low",
+    "title": "Password input present",
+    "description": "Ensure password handling uses HTTPS, strong CSP, and avoids logging sensitive data.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<input[^>]*\\btype=\\\"password\\\"",
+      "message": "password input detected"
+    }
+  },
+  {
+    "id": "astro/input-type-file",
+    "severity": "low",
+    "title": "File input present",
+    "description": "File uploads require validation, size limits, content-type checks, and storage hardening.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<input[^>]*\\btype=\\\"file\\\"",
+      "message": "file input detected"
+    }
+  },
+  {
+    "id": "astro/object-tag",
+    "severity": "medium",
+    "title": "<object> embedded",
+    "description": "Embedding arbitrary content via <object> can increase clickjacking and plugin risks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<object\\b",
+      "message": "object tag detected"
+    }
+  },
+  {
+    "id": "astro/embed-tag",
+    "severity": "medium",
+    "title": "<embed> embedded",
+    "description": "Embedding arbitrary content via <embed> can increase clickjacking and plugin risks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<embed\\b",
+      "message": "embed tag detected"
+    }
+  },
+  {
+    "id": "astro/svg-tag",
+    "severity": "low",
+    "title": "Inline SVG present",
+    "description": "Inline SVG can contain scriptable content; treat untrusted SVG as potentially dangerous.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<svg\\b",
+      "message": "svg tag detected"
+    }
+  },
+  {
+    "id": "astro/math-tag",
+    "severity": "low",
+    "title": "MathML present",
+    "description": "MathML can be abused in some contexts; ensure untrusted content is sanitized.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "<math\\b",
+      "message": "math tag detected"
+    }
+  },
+  {
+    "id": "astro/iframe-allow-top-navigation",
+    "severity": "medium",
+    "title": "iframe sandbox allows top navigation",
+    "description": "allow-top-navigation can enable the iframe to navigate the top-level page.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsandbox=\\\"[^\\\"]*allow-top-navigation",
+      "message": "iframe sandbox allows top navigation"
+    }
+  },
+  {
+    "id": "astro/iframe-allow-forms",
+    "severity": "low",
+    "title": "iframe sandbox allows forms",
+    "description": "allow-forms enables form submission from inside an iframe; review risk.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsandbox=\\\"[^\\\"]*allow-forms",
+      "message": "iframe sandbox allows forms"
+    }
+  },
+  {
+    "id": "astro/iframe-allow-popups-to-escape-sandbox",
+    "severity": "medium",
+    "title": "iframe sandbox allows popups to escape sandbox",
+    "description": "allow-popups-to-escape-sandbox weakens iframe isolation; avoid unless required.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bsandbox=\\\"[^\\\"]*allow-popups-to-escape-sandbox",
+      "message": "iframe sandbox allows popups to escape sandbox"
+    }
+  },
+  {
+    "id": "astro/onmouseover-handler",
+    "severity": "medium",
+    "title": "onmouseover handler present",
+    "description": "Inline mouseover handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonmouseover\\s*=",
+      "message": "onmouseover handler detected"
+    }
+  },
+  {
+    "id": "astro/onfocus-handler",
+    "severity": "medium",
+    "title": "onfocus handler present",
+    "description": "Inline focus handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonfocus\\s*=",
+      "message": "onfocus handler detected"
+    }
+  },
+  {
+    "id": "astro/onblur-handler",
+    "severity": "medium",
+    "title": "onblur handler present",
+    "description": "Inline blur handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonblur\\s*=",
+      "message": "onblur handler detected"
+    }
+  },
+  {
+    "id": "astro/onchange-handler",
+    "severity": "low",
+    "title": "onchange handler present",
+    "description": "Inline change handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonchange\\s*=",
+      "message": "onchange handler detected"
+    }
+  },
+  {
+    "id": "astro/onsubmit-handler",
+    "severity": "low",
+    "title": "onsubmit handler present",
+    "description": "Inline submit handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonsubmit\\s*=",
+      "message": "onsubmit handler detected"
+    }
+  },
+  {
+    "id": "astro/onkeyup-handler",
+    "severity": "low",
+    "title": "onkeyup handler present",
+    "description": "Inline key handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonkeyup\\s*=",
+      "message": "onkeyup handler detected"
+    }
+  },
+  {
+    "id": "astro/onkeydown-handler",
+    "severity": "low",
+    "title": "onkeydown handler present",
+    "description": "Inline key handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonkeydown\\s*=",
+      "message": "onkeydown handler detected"
+    }
+  },
+  {
+    "id": "astro/onkeypress-handler",
+    "severity": "low",
+    "title": "onkeypress handler present",
+    "description": "Inline key handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonkeypress\\s*=",
+      "message": "onkeypress handler detected"
+    }
+  },
+  {
+    "id": "astro/onmouseenter-handler",
+    "severity": "low",
+    "title": "onmouseenter handler present",
+    "description": "Inline mouse handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonmouseenter\\s*=",
+      "message": "onmouseenter handler detected"
+    }
+  },
+  {
+    "id": "astro/onmouseleave-handler",
+    "severity": "low",
+    "title": "onmouseleave handler present",
+    "description": "Inline mouse handlers can be abused for XSS and weaken CSP.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "\\bonmouseleave\\s*=",
+      "message": "onmouseleave handler detected"
+    }
+  },
+  {
+    "id": "astro/astro-url-searchparams",
+    "severity": "medium",
+    "title": "Astro.url.searchParams usage",
+    "description": "Query parameter usage should be validated and sanitized before use to avoid injection and open redirects.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "Astro\\.url\\.searchParams\\.get",
+      "message": "Astro.url.searchParams.get referenced"
+    }
+  },
+  {
+    "id": "astro/astro-cookies-get",
+    "severity": "low",
+    "title": "Astro.cookies.get usage",
+    "description": "Reading cookies is normal, but ensure cookies are httpOnly/secure and values are validated.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "Astro\\.cookies\\.get",
+      "message": "Astro.cookies.get referenced"
+    }
+  },
+  {
+    "id": "astro/astro-cookies-set",
+    "severity": "medium",
+    "title": "Astro.cookies.set usage",
+    "description": "When setting cookies, ensure httpOnly, secure, and SameSite attributes are set appropriately.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "Astro\\.cookies\\.set",
+      "message": "Astro.cookies.set referenced"
+    }
+  },
+  {
+    "id": "astro/astro-redirect",
+    "severity": "medium",
+    "title": "Astro.redirect usage",
+    "description": "Redirects should not be built from untrusted input to avoid open redirect attacks.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "Astro\\.redirect",
+      "message": "Astro.redirect referenced"
+    }
+  },
+  {
+    "id": "astro/basic-auth-header",
+    "severity": "medium",
+    "title": "Basic Authorization header referenced",
+    "description": "Basic auth should only be used over HTTPS and with strong credential handling.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "Authorization:\\s*Basic",
+      "message": "Basic Authorization header reference"
+    }
+  },
+  {
+    "id": "astro/bearer-auth-header",
+    "severity": "low",
+    "title": "Bearer Authorization header referenced",
+    "description": "Treat bearer tokens as secrets; avoid logging and ensure HTTPS.",
+    "matcher": {
+      "type": "regex",
+      "fileGlobs": ["**/*.astro"],
+      "pattern": "Authorization:\\s*Bearer",
+      "message": "Bearer Authorization header reference"
+    }
   }
 ]

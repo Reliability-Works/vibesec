@@ -95,8 +95,13 @@ test('workspace scan scopes framework rules to project roots', async () => {
   assert.equal(rnAtsPaths.includes('apps/web/Info.plist'), false)
   assertAllPrefixed(rnAtsPaths, 'apps/rn/', 'rn/ats-arbitrary-loads')
 
-  const expoTokenPaths = rulePaths(result, 'rn/asyncstorage-token-key')
+  const expoTokenPaths = rulePaths(result, 'expo/asyncstorage-token-key')
   assert.ok(expoTokenPaths.includes('apps/expo/src.ts'))
   assert.equal(expoTokenPaths.includes('apps/web/src/decoy-rn.ts'), false)
-  assertAllPrefixed(expoTokenPaths, ['apps/expo/', 'apps/rn/'], 'rn/asyncstorage-token-key')
+  assertAllPrefixed(expoTokenPaths, 'apps/expo/', 'expo/asyncstorage-token-key')
+
+  const rnTokenPaths = rulePaths(result, 'rn/asyncstorage-token-key')
+  assert.ok(rnTokenPaths.includes('apps/rn/src/rn-rules.ts'))
+  assert.equal(rnTokenPaths.includes('apps/expo/src.ts'), false)
+  assertAllPrefixed(rnTokenPaths, 'apps/rn/', 'rn/asyncstorage-token-key')
 })
